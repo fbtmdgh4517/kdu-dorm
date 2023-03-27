@@ -1,21 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const WeekDiet = () => {
+    const [mondayMeal, setMondayMeal] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(
-                    'https://www.kduniv.ac.kr/kor/CMS/DietMenuMgr/list.do?mCode=MN183&searchDietCategory=5',
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                        },
-                    }
-                );
-                console.log(res);
+                const res = await axios.get('http://localhost:4000/weekDiet', {
+                    headers: {},
+                });
+                console.log(res.data);
             } catch (e) {
                 console.log(e);
             }
