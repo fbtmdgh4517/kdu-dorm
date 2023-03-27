@@ -36,9 +36,6 @@ const LoginPage = () => {
                         로그인
                     </button>
                 </form>
-                <Link className="underline text-gray-400 text-sm" to="/register">
-                    회원가입
-                </Link>
             </div>
         </>
     );
