@@ -1,35 +1,51 @@
 const cheerio = require('cheerio');
 const express = require('express');
 const request = require('request');
-
+const FormData = require('form-data');
+const axios = require('axios');
 const router = express.Router();
 
+const dietList = {
+    date: '',
+    breakfast: '',
+    dinner: '',
+};
+
 router.get('/', (req, res) => {
-    res.send('diet');
-    var options = {
+    res.header('Access-Control-Allow-Origin', '*');
+    const meals = [];
+
+    let options = {
         method: 'POST',
         url: 'https://www.kduniv.ac.kr/kor/CMS/DietMenuMgr/list.do',
         headers: {
-            Cookie: 'JSESSIONID=F4E37BA5A82D4B0EFFF4CC34744F03B2.worker1',
+            Cookie: 'JSESSIONID=D3D68E51124F13D7A286F97E9BEA5696.worker1',
         },
         formData: {
             mCode: 'MN183',
-            searchDay: '2023-03-06',
+            searchDay: '2023-03-27',
             searchDietCategory: '5',
         },
     };
-    request(options, function (error, response, body) {
+    request(options, (error, response) => {
         if (error) throw new Error(error);
-        let $ = cheerio.load(body);
+        let $ = cheerio.load(response.body);
         try {
-            $('tbody tr td').each(function (index, elem) {
-                var rate_text = $(this).text().trim(); //해당 태그의 text부분만 잘라오기
-                console.log(rate_text);
-                // res.send(rate_text);
+            $('tbody tr').each(function (index, elem) {
+                const date = $(elem).find('th').text().trim();
+                const breakfast = $(elem).find('td ul.res-depth1').text().trim().split('\n');
+                const dinner = $(elem).find('td ul.res-depth2').text().trim().split('\n');
+                if (date === '' && breakfast === '' && dinner === '') {
+                    //반복문 탈출
+                    return false;
+                }
+                meals.push({ date, breakfast, dinner });
             });
         } catch (error) {
             console.error(error);
         }
+        console.log(meals);
+        res.send(meals);
     });
 });
 
