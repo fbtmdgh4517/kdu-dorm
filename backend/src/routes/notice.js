@@ -1,28 +1,61 @@
 const express = require('express');
 const FormData = require('form-data');
 const axios = require('axios');
-const data = new FormData();
+const request = require('request');
+const form = new FormData();
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send('notice');
-    var config = {
-        method: 'post',
-        url: 'https://metrodorm.kduniv.ac.kr/bbs/getBbsView.kmc?seq=907&bbs_locgbn=KY&bbs_id=notice',
-        headers: {
-            Cookie: 'JSESSIONID="Da37_SvWUQagRes4nxCaTHxzqNke7gKncJ70h8eP.master:NON-HAKSA-1"; SCOUTER=z36j0dbdjppeus',
-            ...data.getHeaders(),
-        },
-        data: data,
-    };
+form.append('rows', '10');
+form.append('bbs_locgbn', 'KY');
+form.append('bbs_id', 'notice');
+form.append('cPage', '1');
 
-    axios(config)
-        .then(function (response) {
-            console.log(JSON.stringify(response.data));
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+router.get('/', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    axios
+        .post('https://metrodorm.kduniv.ac.kr/bbs/getBbsList.kmc', {
+            rows: '10',
+            bbs_locgbn: 'KY',
+            bbs_id: 'notice',
+            cPage: '1',
         })
-        .catch(function (error) {
-            console.log(error);
+        .then((response) => {
+            // console.log(response.data);
+            res.send(response.data);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send('서버 오류');
         });
+    // axios
+    //     .post('https://metrodorm.kduniv.ac.kr/bbs/getBbsList.kmc', form, {
+    //         headers: {},
+    //     })
+    //     .then((response) => {
+    //         console.log(response.data);
+    //         // res.send(response.data);
+    //     })
+    //     .catch((error) => {
+    //         console.log(error);
+    //         res.status(500).send('서버 오류');
+    //     });
+    // let options = {
+    //     method: 'POST',
+    //     url: 'https://metrodorm.kduniv.ac.kr/bbs/getBbsList.kmc',
+    //     headers: {},
+    //     formData: {
+    //         rows: '10',
+    //         bbs_locgbn: 'KY',
+    //         bbs_id: 'notice',
+    //         cPage: '1',
+    //     },
+    // };
+    // request(options, (error, response) => {
+    //     if (error) throw new Error(error);
+    //     res.send(response.body);
+    // });
 });
 
 module.exports = router;
