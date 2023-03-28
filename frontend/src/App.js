@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import ManagerPage from './pages/ManagerPage';
+import NoticePage from './pages/NoticePage';
 import RegisterPage from './pages/RegisterPage';
 import SinchungCheckPage from './pages/SinchungCheckPage';
 import SinchungPage from './pages/SinchungPage';
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/managerMain" element={<ManagerPage />} />
                 <Route path="/sinchungCheck" element={<SinchungCheckPage />} />
                 <Route path="/weekDiet" element={<WeekDiet />} />
+                <Route path="/notice" element={<NoticePage />} />
             </Routes>
         </>
     );
