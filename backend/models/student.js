@@ -30,7 +30,25 @@ class Student extends Sequelize.Model {
                     allowNull: false,
                 },
             },
-            {}
+            {
+                sequelize,
+                timestamps: false,
+                underscored: false,
+                modelName: 'Student',
+                tableName: 'students',
+                paranoid: false,
+                charset: 'utf8',
+                collate: 'utf8_general_ci',
+            }
         );
     }
+
+    static associate(db) {
+        db.Student.hasMany(db.OvernightApplication, {
+            foreignKey: 'student_id',
+            sourceKey: 'student_id',
+        });
+    }
 }
+
+module.exports = Student;
