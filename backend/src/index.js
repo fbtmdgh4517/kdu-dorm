@@ -1,14 +1,19 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const passport = require('passport');
 const path = require('path');
-const { sequelize } = require('../models');
+const { sequelize } = require('./models');
+const passportConfig = require('./passport');
+
 const noticeRouter = require('./routes/notice');
 const weekDietRouter = require('./routes/weekDiet');
+const authRouter = require('./routes/auth');
 const app = express();
 
 const envPath = path.join(__dirname, '../.env');
 require('dotenv').config({ path: envPath });
+passportConfig();
 
 const { COOKIE_SECRET, PORT } = process.env;
 
@@ -37,8 +42,12 @@ app.use(
         name: 'session-cookie',
     })
 );
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/notice', noticeRouter);
 app.use('/weekDiet', weekDietRouter);
+app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
