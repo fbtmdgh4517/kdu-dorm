@@ -6,24 +6,25 @@ const path = require('path');
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
 const MySQLStore = require('express-mysql-session')(session);
+const app = express();
+const cors = require('cors');
 
 const noticeRouter = require('./routes/notice');
 const weekDietRouter = require('./routes/weekDiet');
 const authRouter = require('./routes/auth');
 const applicationRouter = require('./routes/application');
-const app = express();
-const cors = require('cors');
 
 const envPath = path.join(__dirname, '../.env');
 require('dotenv').config({ path: envPath });
 passportConfig();
+const { COOKIE_SECRET, PORT, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const options = {
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: 's03203614@',
-    database: 'kdu_dorm',
+    host: DB_HOST,
+    port: DB_PORT,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
 
     clearExpired: true,
     checkExpirationInterval: 10000,
@@ -31,8 +32,6 @@ const options = {
 };
 
 const sessionStore = new MySQLStore(options);
-
-const { COOKIE_SECRET, PORT } = process.env;
 
 // sequelize
 //     .sync({ force: false })
