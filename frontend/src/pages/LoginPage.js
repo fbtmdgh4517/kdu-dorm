@@ -117,6 +117,12 @@ const LoginPage = (props) => {
                                 로그인
                             </button>
                         </form>
+                        <Link
+                            className="mt-6 h-[35px] w-[85px] items-center justify-center self-center flex mx-auto px-2 py-0.5 text-base font-medium text-gray-500 sm:flex underline"
+                            to="/signup"
+                        >
+                            회원가입
+                        </Link>
                     </div>
                 </>
             ) : (
