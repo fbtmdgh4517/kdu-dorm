@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import ManagerPage from './pages/ManagerPage';
 import NoticePage from './pages/NoticePage';
-import RegisterPage from './pages/RegisterPage';
+import SignupPage from './pages/SignupPage';
 import SinchungCheckPage from './pages/SinchungCheckPage';
 import SinchungPage from './pages/SinchungPage';
 import UserPage from './pages/UserPage';
@@ -17,7 +17,7 @@ function App() {
             </Helmet>
             <Routes>
                 <Route path="/" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/signup" element={<SignupPage />} />
                 <Route path="/userMain" element={<UserPage />} />
                 <Route path="/sinchung" element={<SinchungPage />} />
                 <Route path="/managerMain" element={<ManagerPage />} />
