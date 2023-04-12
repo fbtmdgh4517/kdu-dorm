@@ -8,6 +8,79 @@ const db = require('../../db');
 
 const router = express.Router();
 
+router.post('/signupRequest', (req, res) => {
+    const studentName = req.body.student_name;
+    const studentId = req.body.student_id;
+    const studentDepartment = req.body.student_department;
+    const studentContact = req.body.student_contact;
+    const studentRoom = req.body.student_room;
+    const studentPassword = req.body.student_password;
+
+    if (studentName && studentId && studentDepartment && studentContact && studentRoom && studentPassword) {
+        db.query('SELECT * FROM students where student_id = ?', [studentId], (error, results, fields) => {
+            console.log(results);
+        });
+    }
+});
+
+router.post('/login', (req, res) => {
+    const studentId = req.body.student_id;
+    const studentPassword = req.body.student_password;
+    const sendData = { isLogin: '', studentName: '', sessionID: '' };
+
+    if (studentId && studentPassword) {
+        db.query('SELECT * FROM students where student_id = ?', [studentId], (error, results, fields) => {
+            if (error) throw error;
+            if (results.length > 0) {
+                bcrypt.compare(studentPassword, results[0].student_password, (err, result) => {
+                    if (result) {
+                        req.session.is_logined = true;
+                        req.session.student_id = studentId;
+                        req.session.save(() => {
+                            sendData.studentName = results[0].student_name;
+                            sendData.isLogin = 'True';
+                            sendData.sessionID = req.sessionID;
+                            res.send(sendData);
+                            console.log('로그인 성공');
+                        });
+                        console.log(req.sessionID);
+                    } else {
+                        sendData.isLogin = '로그인 정보 일치하지 않음';
+                        res.send(sendData);
+                    }
+                });
+            } else {
+                sendData.isLogin = '아이디 정보 일치하지 않음';
+                res.send(sendData);
+            }
+        });
+    } else {
+        sendData.isLogin = '아이디와 비밀번호를 입력해주세요';
+        res.send(sendData);
+    }
+});
+
+router.get('/authcheck', (req, res) => {
+    const sendData = { isLogin: '' };
+    console.log('authcheck');
+    console.log(req.sessionID);
+    console.log(req.session);
+    if (req.session.is_logined) {
+        sendData.isLogin = 'True';
+    } else {
+        sendData.isLogin = 'False';
+    }
+    res.send(sendData);
+});
+
+router.get('/logout', (req, res) => {
+    res.clearCookie('session-cookie', { path: '/' });
+    req.session.destroy(() => {
+        console.log('로그아웃 성공');
+        res.redirect('/');
+    });
+});
+
 // router.post(
 //     '/login',
 //     (req, res, next) => {
@@ -51,65 +124,6 @@ const router = express.Router();
 //         })(req, res, next);
 //     }
 // );
-
-router.post('/login', (req, res) => {
-    const studentId = req.body.student_id;
-    const studentPassword = req.body.student_password;
-    const sendData = { isLogin: '', studentName: '', sessionID: '' };
-
-    console.log(studentId);
-    console.log(studentPassword);
-
-    if (studentId && studentPassword) {
-        db.query('SELECT * FROM students where student_id = ?', [studentId], (error, results, fields) => {
-            if (error) throw error;
-            if (results.length > 0) {
-                bcrypt.compare(studentPassword, results[0].student_password, (err, result) => {
-                    if (result) {
-                        req.session.is_logined = true;
-                        req.session.student_id = studentId;
-                        req.session.save(() => {
-                            sendData.studentName = results[0].student_name;
-                            sendData.isLogin = 'True';
-                            sendData.sessionID = req.sessionID;
-                            res.send(sendData);
-                            console.log('로그인 성공');
-                        });
-                        console.log(req.sessionID);
-                    } else {
-                        sendData.isLogin = '로그인 정보 일치하지 않음';
-                        res.send(sendData);
-                    }
-                });
-            } else {
-                sendData.isLogin = '아이디 정보 일치하지 않음';
-                res.send(sendData);
-            }
-        });
-    } else {
-        sendData.isLogin = '아이디와 비밀번호를 입력해주세요';
-        res.send(sendData);
-    }
-});
-
-router.get('/authcheck', (req, res) => {
-    const sendData = { isLogin: '' };
-    console.log(req.sessionID);
-    if (req.session.is_logined) {
-        sendData.isLogin = 'True';
-    } else {
-        sendData.isLogin = 'False';
-    }
-    res.send(sendData);
-});
-
-router.get('/logout', (req, res) => {
-    res.clearCookie('session-cookie', { path: '/' });
-    req.session.destroy(() => {
-        console.log('로그아웃 성공');
-        res.redirect('/');
-    });
-});
 
 // router.get(
 //     '/logout',
