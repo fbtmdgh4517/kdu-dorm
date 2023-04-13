@@ -16,9 +16,26 @@ router.post('/signupRequest', (req, res) => {
     const studentRoom = req.body.student_room;
     const studentPassword = req.body.student_password;
 
+    const sendData = { isSuccess: '' };
+
     if (studentName && studentId && studentDepartment && studentContact && studentRoom && studentPassword) {
         db.query('SELECT * FROM students where student_id = ?', [studentId], (error, results, fields) => {
-            console.log(results);
+            if (error) throw error;
+            if (results.length <= 0) {
+                const hashedPassword = bcrypt.hashSync(studentPassword, 10);
+                db.query(
+                    'INSERT INTO students (student_name, student_id, student_department, student_contact, student_room, student_password) VALUES (?, ?, ?, ?, ?, ?)',
+                    [studentName, studentId, studentDepartment, studentContact, studentRoom, hashedPassword],
+                    (error, results, fields) => {
+                        if (error) throw error;
+                        sendData.isSuccess = 'True';
+                        res.send(sendData);
+                    }
+                );
+            } else {
+                sendData.isSuccess = '이미 존재하는 아이디입니다.';
+                res.send(sendData);
+            }
         });
     }
 });
