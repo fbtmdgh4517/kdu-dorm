@@ -24,8 +24,8 @@ router.post('/signupRequest', (req, res) => {
             if (results.length <= 0) {
                 const hashedPassword = bcrypt.hashSync(studentPassword, 10);
                 db.query(
-                    'INSERT INTO students (student_name, student_id, student_department, student_contact, student_room, student_password) VALUES (?, ?, ?, ?, ?, ?)',
-                    [studentName, studentId, studentDepartment, studentContact, studentRoom, hashedPassword],
+                    'INSERT INTO signup_requests (student_id, student_name, student_department, student_contact, student_room, student_password) VALUES (?, ?, ?, ?, ?, ?)',
+                    [studentId, studentName, studentDepartment, studentContact, studentRoom, hashedPassword],
                     (error, results, fields) => {
                         if (error) throw error;
                         sendData.isSuccess = 'True';
@@ -41,22 +41,25 @@ router.post('/signupRequest', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    const studentId = req.body.student_id;
+    const id = req.body.student_id;
     const studentPassword = req.body.student_password;
-    const sendData = { isLogin: '', studentName: '', sessionID: '' };
+    const sendData = { isLogin: '', studentName: '', sessionID: '', isAdmin: '' };
 
-    if (studentId && studentPassword) {
-        db.query('SELECT * FROM students where student_id = ?', [studentId], (error, results, fields) => {
+    if (id && studentPassword) {
+        db.query('SELECT * FROM students where student_id = ?', [id], (error, results, fields) => {
             if (error) throw error;
             if (results.length > 0) {
                 bcrypt.compare(studentPassword, results[0].student_password, (err, result) => {
                     if (result) {
                         req.session.is_logined = true;
-                        req.session.student_id = studentId;
+                        req.session.student_id = id;
+                        req.session.student_name = results[0].student_name;
+                        req.session.is_admin = false;
                         req.session.save(() => {
                             sendData.studentName = results[0].student_name;
                             sendData.isLogin = 'True';
                             sendData.sessionID = req.sessionID;
+                            sendData.isAdmin = 'False';
                             res.send(sendData);
                             console.log('로그인 성공');
                         });
@@ -64,6 +67,34 @@ router.post('/login', (req, res) => {
                     } else {
                         sendData.isLogin = '로그인 정보 일치하지 않음';
                         res.send(sendData);
+                    }
+                });
+            } else if (results.length <= 0) {
+                console.log('관리자');
+                db.query('SELECT * FROM administrators where admin_id = ?', [id], (error, results, fields) => {
+                    console.log(results);
+                    if (error) throw error;
+                    if (results.length > 0) {
+                        bcrypt.compare(studentPassword, results[0].admin_password, (err, result) => {
+                            if (result) {
+                                req.session.is_logined = true;
+                                req.session.admin_id = id;
+                                req.session.admin_floor = results[0].admin_floor;
+                                req.session.is_admin = true;
+                                req.session.save(() => {
+                                    sendData.studentName = results[0].admin_id;
+                                    sendData.isLogin = 'True';
+                                    sendData.sessionID = req.sessionID;
+                                    sendData.isAdmin = 'True';
+                                    res.send(sendData);
+                                    console.log('관리자 로그인 성공');
+                                });
+                                console.log(req.sessionID);
+                            } else {
+                                sendData.isLogin = '로그인 정보 일치하지 않음';
+                                res.send(sendData);
+                            }
+                        });
                     }
                 });
             } else {
@@ -78,12 +109,20 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/authcheck', (req, res) => {
-    const sendData = { isLogin: '' };
+    const sendData = { isLogin: '', studentId: '', studentName: '', isAdmin: '' };
     console.log('authcheck');
     console.log(req.sessionID);
     console.log(req.session);
     if (req.session.is_logined) {
         sendData.isLogin = 'True';
+        if (req.session.is_admin === true) {
+            sendData.studentId = req.session.admin_id;
+            sendData.isAdmin = req.session.is_admin;
+        } else {
+            sendData.studentId = req.session.student_id;
+            sendData.studentName = req.session.student_name;
+            sendData.isAdmin = req.session.is_admin;
+        }
     } else {
         sendData.isLogin = 'False';
     }
