@@ -10,6 +10,7 @@ const SignupPage = () => {
         formState: { errors },
     } = useForm();
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const onSubmit = (data) => {
         console.log(data);
@@ -26,7 +27,12 @@ const SignupPage = () => {
                 },
                 { withCredentials: true }
             )
-            .then((res) => {})
+            .then((res) => {
+                console.log(res.data.isSuccess);
+                if (res.data.isSuccess === 'True') {
+                    setSuccessMessage('회원가입 신청이 완료되었습니다. 관리자의 승인을 기다려주세요.');
+                }
+            })
             .catch((err) => {
                 console.error(err);
             });
@@ -53,7 +59,7 @@ const SignupPage = () => {
             >
                 경동대학교 기숙사 외박신청
             </Link>
-            <div className="border border-blue-200 max-w-sm w-11/12 mx-auto rounded-xl shadow-md p-8 bg-white mb-4">
+            <div className="border border-blue-200 max-w-sm w-11/12 mx-auto rounded-xl shadow-md px-8 py-6 bg-white mb-4">
                 <form method="post" onSubmit={handleSubmit(onSubmit)}>
                     <div className="container mx-auto mb-5">
                         <label htmlFor="name" className="font-medium">
@@ -244,6 +250,9 @@ const SignupPage = () => {
                         회원가입
                     </button>
                 </form>
+                {successMessage && (
+                    <div className="text-center text-green-600 font-medium text-lg mt-4">{successMessage}</div>
+                )}
             </div>
         </>
     );
