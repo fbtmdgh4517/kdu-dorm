@@ -1,13 +1,14 @@
 import { Helmet } from 'react-helmet-async';
 import { Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import ManagerPage from './pages/ManagerPage';
+import AdminPage from './pages/AdminPage';
 import NoticePage from './pages/NoticePage';
 import SignupPage from './pages/SignupPage';
 import SinchungCheckPage from './pages/SinchungCheckPage';
 import SinchungPage from './pages/SinchungPage';
 import UserPage from './pages/UserPage';
 import WeekDiet from './pages/WeekDiet';
+import MainPage from './pages/MainPage';
 
 function App() {
     return (
@@ -17,10 +18,11 @@ function App() {
             </Helmet>
             <Routes>
                 <Route path="/" element={<LoginPage />} />
+                <Route path="/main" element={<MainPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/userMain" element={<UserPage />} />
                 <Route path="/sinchung" element={<SinchungPage />} />
-                <Route path="/managerMain" element={<ManagerPage />} />
+                <Route path="/managerMain" element={<AdminPage />} />
                 <Route path="/sinchungCheck" element={<SinchungCheckPage />} />
                 <Route path="/weekDiet" element={<WeekDiet />} />
                 <Route path="/notice" element={<NoticePage />} />
