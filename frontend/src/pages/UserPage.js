@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NoticeListPreview from '../components/NoticeListPreview';
 import TodayDiet from '../components/TodayDiet';
+import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
 
 const UserPage = ({ userName, removeUserHandler }) => {
     const [name, setName] = useState('');
@@ -29,93 +31,14 @@ const UserPage = ({ userName, removeUserHandler }) => {
     const onLogout = async () => {
         await axios.get('http://localhost:4000/auth/logout', { withCredentials: true }).then((res) => {});
         removeUserHandler();
-        // navigate('/');
-    };
-
-    const onSideBarToggle = () => {
-        document.getElementById('sidebar').classList.toggle('hidden');
-        document.getElementById('toggleSidebarMobile').classList.toggle('bg-gray-100');
-        document.getElementById('toggleSidebarMobileHamburger').classList.toggle('hidden');
-        document.getElementById('toggleSidebarMobileClose').classList.toggle('hidden');
+        navigate('/');
     };
 
     return (
         <>
-            <nav className="bg-white border-b border-gray-200 fixed z-30 w-full">
-                <div className="px-3 py-5 lg:px-5 lg:pl-3">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center justify-start">
-                            <button
-                                id="toggleSidebarMobile"
-                                aria-expanded="true"
-                                aria-controls="sidebar"
-                                onClick={onSideBarToggle}
-                                className="lg:hidden mr-2 text-gray-600 hover:text-gray-900 cursor-pointer p-2 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 rounded"
-                            >
-                                <svg
-                                    id="toggleSidebarMobileHamburger"
-                                    className="w-6 h-6"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                                        clipRule="evenodd"
-                                    ></path>
-                                </svg>
-                                <svg
-                                    id="toggleSidebarMobileClose"
-                                    className="w-6 h-6 hidden"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                        clipRule="evenodd"
-                                    ></path>
-                                </svg>
-                            </button>
-                            <Link className="text-xl font-bold flex items-center lg:ml-2.5" to="/">
-                                경동대학교 기숙사 외박신청
-                            </Link>
-                        </div>
-                        <div className="flex items-center">{userName}</div>
-                    </div>
-                </div>
-            </nav>
+            <Header userName={userName}></Header>
             <div className="flex overflow-hidden bg-white pt-16">
-                <aside
-                    id="sidebar"
-                    className="fixed hidden z-20 h-full top-0 left-0 pt-16 flex lg:flex flex-shrink-0 flex-col w-64 transition-[width] duration-75"
-                    aria-label="Sidebar"
-                >
-                    <div className="relative flex-1 flex flex-col min-h-0 border-r border-gray-300 bg-white pt-0">
-                        <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                            <div className="flex-1 px-3 bg-white divide-y space-y-1">
-                                <ul className="space-y-2 pb-2">
-                                    <li>
-                                        <button
-                                            onClick={onLogout}
-                                            className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group"
-                                        >
-                                            <span className="ml-3">로그아웃</span>
-                                        </button>
-                                    </li>
-                                    {/* <li>
-                                        <Link className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-                                            <span className="ml-3">회원가입</span>
-                                        </Link>
-                                    </li> */}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-                <div className="bg-gray-900 opacity-50 hidden fixed inset-0 z-10" id="sidebarBackdrop"></div>
+                <Sidebar onLogout={onLogout}></Sidebar>
                 <div id="main-content" className="h-full w-full bg-gray-100 relative overflow-y-auto lg:ml-64">
                     <main>
                         <div className="py-6 px-4">
@@ -162,10 +85,10 @@ const UserPage = ({ userName, removeUserHandler }) => {
                                     <div className="flex items-center justify-between mb-4">
                                         <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 조회</h1>
                                     </div>
-                                    <div className="bg-gray-100 border border-gray-300 text-center p-4">
+                                    <div className="bg-gray-100 border border-gray-300 text-center p-3 rounded-lg">
                                         <span className="font-bold">{userName}</span>
                                         <span> 의 상벌점</span>
-                                        <div className="flex flex-row mt-8">
+                                        <div className="flex flex-row mt-16">
                                             <div className="w-1/2 py-2">
                                                 <span>상점 :</span>
                                                 <span>2</span>
