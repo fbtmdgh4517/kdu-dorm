@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../db');
 
-router.get('/list', (req, res) => {
-    console.log('list');
+router.get('/ownlist', (req, res) => {
+    console.log('ownlist');
     console.log(req.session);
     const studentId = req.session.student_id;
     const sqlQuery =
@@ -13,5 +13,18 @@ router.get('/list', (req, res) => {
         res.send(result);
     });
 });
+
+router.get('/list', (req, res) => {
+    console.log('list');
+    console.log(req.session);
+    const sqlQuery =
+        'SELECT overnight_applications.*, students.student_name FROM overnight_applications join students on students.student_id = overnight_applications.student_id';
+    db.query(sqlQuery, (error, result) => {
+        if (error) throw error;
+        res.send(result);
+    });
+});
+
+router.get('/:id', (req, res) => {});
 
 module.exports = router;
