@@ -8,8 +8,33 @@ import axios from 'axios';
 
 const AdminPage = ({ removeUserHandler, admin }) => {
     const navigate = useNavigate();
+    const [applicationInfo, setApplicationInfo] = useState([]);
 
     console.log('관리자 페이지임');
+
+    const fetchData = async () => {
+        await axios
+            .get('http://localhost:4000/application/list', { withCredentials: true })
+            .then((res) => {
+                console.log(
+                    res.data.sort((a, b) => {
+                        return new Date(b.application_time) - new Date(a.application_time);
+                    })
+                );
+                setApplicationInfo(
+                    res.data.sort((a, b) => {
+                        return new Date(b.application_time) - new Date(a.application_time);
+                    })
+                );
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const onLogout = async () => {
         await axios.get('http://localhost:4000/auth/logout', { withCredentials: true }).then((res) => {});
@@ -37,7 +62,7 @@ const AdminPage = ({ removeUserHandler, admin }) => {
                                             외박신청
                                         </Link> */}
                                     </div>
-                                    {/* {applicationInfo.map((application) => {
+                                    {applicationInfo.map((application) => {
                                         const applicationYear = new Date(application.application_time).getFullYear();
                                         const applicationMonth = new Date(application.application_time).getMonth() + 1;
                                         const applicationDate = new Date(application.application_time).getDate();
@@ -47,11 +72,11 @@ const AdminPage = ({ removeUserHandler, admin }) => {
                                                 className="max-w-md container mx-auto mb-4"
                                             >
                                                 <Link className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center">
-                                                    {`${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}
+                                                    {`${application.student_name}의 ${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}
                                                 </Link>
                                             </div>
                                         );
-                                    })} */}
+                                    })}
                                 </div>
                                 <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                                     {/* 카드 */}
