@@ -14,7 +14,7 @@ const UserPage = ({ userName, removeUserHandler }) => {
 
     const fetchData = async () => {
         await axios
-            .get('http://localhost:4000/application/list', { withCredentials: true })
+            .get('http://localhost:4000/application/ownlist', { withCredentials: true })
             .then((res) => {
                 console.log(res.data);
                 setApplicationInfo(res.data);
