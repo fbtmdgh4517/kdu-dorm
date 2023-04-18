@@ -27,32 +27,32 @@ const TodayDiet = () => {
         <div className="text-center">
             {todayDate && todayBreakfast && todayDinner ? (
                 <>
-                    <p className="text-xl font-medium">기숙사 식단</p>
-                    <p className="text-xl font-medium">{todayDate}</p>
-                    <br></br>
-                    <div className="space-x-3">
-                        <p className="text-xl font-medium">아침</p>
+                    <div className="flex items-center justify-between mb-4">
+                        <h1 className="text-xl font-bold leading-none text-gray-900">기숙사 식단</h1>
+                    </div>
+                    <p className="text-lg font-semibold">{todayDate}</p>
+                    <div className="m-3">
+                        <p className="text-lg font-semibold mb-1 ">아침</p>
                         {todayBreakfast[0] !== '' ? (
                             todayBreakfast.map((meal) => (
-                                <p className="text-xl font-medium" key={meal}>
+                                <p className="" key={meal}>
                                     {meal}
                                 </p>
                             ))
                         ) : (
-                            <p className="text-xl font-medium">식단이 없습니다.</p>
+                            <p className="">식단이 없습니다.</p>
                         )}
                     </div>
-                    <br></br>
-                    <div className="space-x-3">
-                        <p className="text-xl font-medium">저녁</p>
+                    <div className="m-3">
+                        <p className="text-lg font-semibold mb-1">저녁</p>
                         {todayDinner[0] !== '' ? (
                             todayDinner.map((meal) => (
-                                <p className="text-xl font-medium" key={meal}>
+                                <p className="" key={meal}>
                                     {meal}
                                 </p>
                             ))
                         ) : (
-                            <p className="text-xl font-medium">식단이 없습니다.</p>
+                            <p className="">식단이 없습니다.</p>
                         )}
                     </div>
                 </>
