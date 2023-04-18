@@ -9,6 +9,7 @@ import axios from 'axios';
 const AdminPage = ({ removeUserHandler, admin }) => {
     const navigate = useNavigate();
     const [applicationInfo, setApplicationInfo] = useState([]);
+    const [signupRequest, setSignupRequest] = useState([]);
 
     console.log('관리자 페이지임');
 
@@ -16,11 +17,7 @@ const AdminPage = ({ removeUserHandler, admin }) => {
         await axios
             .get('http://localhost:4000/application/list', { withCredentials: true })
             .then((res) => {
-                console.log(
-                    res.data.sort((a, b) => {
-                        return new Date(b.application_time) - new Date(a.application_time);
-                    })
-                );
+                console.log(res.data);
                 setApplicationInfo(
                     res.data.sort((a, b) => {
                         return new Date(b.application_time) - new Date(a.application_time);
@@ -30,6 +27,10 @@ const AdminPage = ({ removeUserHandler, admin }) => {
             .catch((err) => {
                 console.log(err);
             });
+        await axios.get('http://localhost:4000/auth/signupRequest').then((res) => {
+            // console.log(res.data);
+            setSignupRequest(res.data);
+        });
     };
 
     useEffect(() => {
@@ -71,8 +72,11 @@ const AdminPage = ({ removeUserHandler, admin }) => {
                                                 key={application.application_id}
                                                 className="max-w-md container mx-auto mb-4"
                                             >
-                                                <Link className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center">
-                                                    {`${application.student_name}의 ${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}
+                                                <Link className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center justify-between">
+                                                    <span>{`${application.student_name}의 ${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}</span>
+                                                    <span className="text-blue-700 font-bold">
+                                                        {application.approval_status}
+                                                    </span>
                                                 </Link>
                                             </div>
                                         );
@@ -84,7 +88,7 @@ const AdminPage = ({ removeUserHandler, admin }) => {
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
-                                <div className="bg-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full">
+                                <div className="bg-white shadow rounded-lg p-4 sm:p-6 h-full">
                                     {/* 카드 */}
                                     <TodayDiet></TodayDiet>
                                 </div>
@@ -92,9 +96,21 @@ const AdminPage = ({ removeUserHandler, admin }) => {
                                     {/* 카드 */}
                                     <div className="flex items-center justify-between mb-4">
                                         <h1 className="text-xl font-bold leading-none text-gray-900">
-                                            여기에 뭘 넣지..
+                                            회원가입 신청 목록
                                         </h1>
                                     </div>
+                                    {signupRequest.map((request) => {
+                                        return (
+                                            <div key={request.request_id} className="max-w-md container mx-auto mb-4">
+                                                <Link className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center justify-between">
+                                                    <span>{`${request.student_id} ${request.student_name}의 회원가입 신청`}</span>
+                                                    <span className="text-blue-700 font-bold">
+                                                        {request.request_status}
+                                                    </span>
+                                                </Link>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
