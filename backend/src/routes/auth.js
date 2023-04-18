@@ -40,7 +40,16 @@ router.post('/signupRequest', (req, res) => {
     }
 });
 
+router.get('/signupRequest', (req, res) => {
+    db.query('SELECT * FROM signup_requests', (error, results, fields) => {
+        if (error) throw error;
+        console.log(results);
+        res.send(results);
+    });
+});
+
 router.post('/login', (req, res) => {
+    // 여기 바꿔야ㅐ됨
     const id = req.body.student_id;
     const studentPassword = req.body.student_password;
     const sendData = { isLogin: '', studentName: '', sessionID: '', isAdmin: '' };
