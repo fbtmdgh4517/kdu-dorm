@@ -47,7 +47,7 @@ const Header = ({ userName }) => {
                                 ></path>
                             </svg>
                         </button>
-                        <Link className="text-xl font-bold flex items-center lg:ml-2.5" to="/">
+                        <Link className="text-xl font-bold flex items-center lg:ml-2.5" to="/main">
                             경동대학교 기숙사 외박신청
                         </Link>
                     </div>
