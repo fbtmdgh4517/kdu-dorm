@@ -5,6 +5,8 @@ import NoticeListPreview from '../components/NoticeListPreview';
 import TodayDiet from '../components/TodayDiet';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import HeaderContainer from '../containers/HeaderContainer';
+import SidebarContainer from '../containers/SidebarContainer';
 
 const UserPage = ({ userName, removeUserHandler }) => {
     const [name, setName] = useState('');
@@ -36,9 +38,9 @@ const UserPage = ({ userName, removeUserHandler }) => {
 
     return (
         <>
-            <Header userName={userName}></Header>
+            <HeaderContainer></HeaderContainer>
             <div className="flex overflow-hidden bg-white pt-16">
-                <Sidebar onLogout={onLogout}></Sidebar>
+                <SidebarContainer></SidebarContainer>
                 <div id="main-content" className="h-full w-full bg-gray-100 relative overflow-y-auto lg:ml-64">
                     <main>
                         <div className="py-6 px-4">

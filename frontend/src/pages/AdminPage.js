@@ -5,6 +5,8 @@ import Sidebar from '../components/Sidebar';
 import NoticeListPreview from '../components/NoticeListPreview';
 import TodayDiet from '../components/TodayDiet';
 import axios from 'axios';
+import HeaderContainer from '../containers/HeaderContainer';
+import SidebarContainer from '../containers/SidebarContainer';
 
 const AdminPage = ({ removeUserHandler, admin }) => {
     const navigate = useNavigate();
@@ -45,9 +47,9 @@ const AdminPage = ({ removeUserHandler, admin }) => {
 
     return (
         <>
-            <Header userName={admin}></Header>
+            <HeaderContainer></HeaderContainer>
             <div className="flex overflow-hidden bg-white pt-16">
-                <Sidebar onLogout={onLogout}></Sidebar>
+                <SidebarContainer></SidebarContainer>
                 <div id="main-content" className="h-full w-full bg-gray-100 relative overflow-y-auto lg:ml-64">
                     <main>
                         <div className="py-6 px-4">
