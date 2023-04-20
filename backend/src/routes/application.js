@@ -25,6 +25,25 @@ router.get('/list', (req, res) => {
     });
 });
 
+router.post('/application', (req, res) => {
+    console.log('외박신청 라우터');
+    const studentId = req.body.student_id;
+    const startDate = req.body.start_date;
+    const endDate = req.body.end_date;
+    const reason = req.body.reason;
+    const sendData = { isSuccess: '' };
+    const sqlQuery =
+        'INSERT INTO overnight_applications (student_id, start_date, end_date, application_reason) VALUES (?, ?, ?, ?)';
+
+    if (studentId && startDate && endDate && reason) {
+        db.query(sqlQuery, [studentId, startDate, endDate, reason], (error, result) => {
+            if (error) throw error;
+            sendData.isSuccess = 'True';
+            res.send(sendData);
+        });
+    }
+});
+
 router.get('/:id', (req, res) => {});
 
 module.exports = router;
