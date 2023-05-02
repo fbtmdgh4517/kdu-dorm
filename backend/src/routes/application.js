@@ -44,6 +44,15 @@ router.post('/application', (req, res) => {
     }
 });
 
-router.get('/:id', (req, res) => {});
+router.get('/:id', (req, res) => {
+    // console.log(req.params.id);
+    console.log('외박신청 상세');
+    const sqlQuery = 'SELECT * FROM overnight_applications WHERE application_id = ?';
+
+    db.query(sqlQuery, [req.params.id], (error, result) => {
+        if (error) throw error;
+        res.send(result);
+    });
+});
 
 module.exports = router;
