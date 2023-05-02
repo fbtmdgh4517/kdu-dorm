@@ -74,7 +74,10 @@ const AdminPage = ({ removeUserHandler, admin }) => {
                                                 key={application.application_id}
                                                 className="max-w-md container mx-auto mb-4"
                                             >
-                                                <Link className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center justify-between">
+                                                <Link
+                                                    to={`/sinchungCheck/${application.application_id}`}
+                                                    className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center justify-between"
+                                                >
                                                     <span>{`${application.student_name}의 ${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}</span>
                                                     <span className="text-blue-700 font-bold">
                                                         {application.approval_status}
