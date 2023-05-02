@@ -23,7 +23,7 @@ function App() {
                 <Route path="/userMain" element={<UserPage />} />
                 <Route path="/sinchung" element={<SinchungPage />} />
                 <Route path="/managerMain" element={<AdminPage />} />
-                <Route path="/sinchungCheck" element={<SinchungCheckPage />} />
+                <Route path="/sinchungCheck/:id" element={<SinchungCheckPage />} />
                 <Route path="/weekDiet" element={<WeekDiet />} />
                 <Route path="/notice" element={<NoticePage />} />
             </Routes>
