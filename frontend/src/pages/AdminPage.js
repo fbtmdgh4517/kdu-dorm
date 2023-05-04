@@ -107,7 +107,10 @@ const AdminPage = ({ removeUserHandler, admin }) => {
                                     {signupRequest.map((request) => {
                                         return (
                                             <div key={request.request_id} className="max-w-md container mx-auto mb-4">
-                                                <Link className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center justify-between">
+                                                <Link
+                                                    className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center justify-between"
+                                                    to={`/signupRequestCheck/${request.request_id}`}
+                                                >
                                                     <span>{`${request.student_id} ${request.student_name}의 회원가입 신청`}</span>
                                                     <span className="text-blue-700 font-bold">
                                                         {request.request_status}
