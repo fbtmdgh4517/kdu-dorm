@@ -9,6 +9,7 @@ import SinchungPage from './pages/SinchungPage';
 import UserPage from './pages/UserPage';
 import WeekDiet from './pages/WeekDiet';
 import MainPage from './pages/MainPage';
+import SignupCheckPage from './pages/SignUpCheckPage';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/sinchung" element={<SinchungPage />} />
                 <Route path="/managerMain" element={<AdminPage />} />
                 <Route path="/sinchungCheck/:id" element={<SinchungCheckPage />} />
+                <Route path="/signupRequestCheck/:id" element={<SignupCheckPage />} />
                 <Route path="/weekDiet" element={<WeekDiet />} />
                 <Route path="/notice" element={<NoticePage />} />
             </Routes>
