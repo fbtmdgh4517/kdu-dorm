@@ -9,23 +9,23 @@ import axios from 'axios';
 const SinchungCheckPage = () => {
     //관리자가 체크하는 페이지
     const { id } = useParams();
-    const [applicationInfo, setApplicationInfo] = useState();
+    const [applicationInfo, setApplicationInfo] = useState({});
     const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState();
+    const [endDate, setEndDate] = useState('');
 
     const fetchData = async () => {
         // console.log(id);
         await axios
             .get(`http://localhost:4000/application/${id}`, { withCredentials: true })
             .then((res) => {
-                console.log(res.data[0]);
+                console.log(res.data);
                 setApplicationInfo(res.data[0]);
-                const applicationStartYear = new Date(applicationInfo.start_date).getFullYear();
-                const applicationStartMonth = new Date(applicationInfo.start_date).getMonth() + 1;
-                const applicationStartDate = new Date(applicationInfo.start_date).getDate();
-                const applicationEndYear = new Date(applicationInfo.end_date).getFullYear();
-                const applicationEndMonth = new Date(applicationInfo.end_date).getMonth() + 1;
-                const applicationEndDate = new Date(applicationInfo.end_date).getDate();
+                const applicationStartYear = new Date(res.data[0].start_date).getFullYear();
+                const applicationStartMonth = new Date(res.data[0].start_date).getMonth() + 1;
+                const applicationStartDate = new Date(res.data[0].start_date).getDate();
+                const applicationEndYear = new Date(res.data[0].end_date).getFullYear();
+                const applicationEndMonth = new Date(res.data[0].end_date).getMonth() + 1;
+                const applicationEndDate = new Date(res.data[0].end_date).getDate();
                 setStartDate(`${applicationStartYear}-${applicationStartMonth}-${applicationStartDate}`);
                 setEndDate(`${applicationEndYear}-${applicationEndMonth}-${applicationEndDate}`);
             })
@@ -37,6 +37,8 @@ const SinchungCheckPage = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    // console.log(applicationInfo.application_reason);
 
     return (
         <>
