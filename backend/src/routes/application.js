@@ -44,10 +44,30 @@ router.post('/application', (req, res) => {
     }
 });
 
-router.get('/:id', (req, res) => {
+router.get('/detail/:id', (req, res) => {
     // console.log(req.params.id);
     console.log('외박신청 상세');
     const sqlQuery = 'SELECT * FROM overnight_applications WHERE application_id = ?';
+
+    db.query(sqlQuery, [req.params.id], (error, result) => {
+        if (error) throw error;
+        res.send(result);
+    });
+});
+
+router.put('/accept/:id', (req, res) => {
+    console.log('외박신청 승인');
+    const sqlQuery = 'UPDATE overnight_applications SET approval_status = "승인" WHERE application_id = ?';
+
+    db.query(sqlQuery, [req.params.id], (error, result) => {
+        if (error) throw error;
+        res.send(result);
+    });
+});
+
+router.put('/refuse/:id', (req, res) => {
+    console.log('외박신청 거부');
+    const sqlQuery = 'UPDATE overnight_applications SET approval_status = "거부" WHERE application_id = ?';
 
     db.query(sqlQuery, [req.params.id], (error, result) => {
         if (error) throw error;
