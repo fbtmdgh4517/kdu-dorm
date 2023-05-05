@@ -16,7 +16,7 @@ const SinchungCheckPage = () => {
     const fetchData = async () => {
         // console.log(id);
         await axios
-            .get(`http://localhost:4000/application/${id}`, { withCredentials: true })
+            .get(`http://localhost:4000/application/detail/${id}`, { withCredentials: true })
             .then((res) => {
                 console.log(res.data);
                 setApplicationInfo(res.data[0]);
@@ -38,7 +38,23 @@ const SinchungCheckPage = () => {
         fetchData();
     }, []);
 
-    // console.log(applicationInfo.application_reason);
+    const onAcceptApplication = async () => {
+        await axios
+            .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
+            .then((res) => {})
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const onRefuseApplication = async () => {
+        await axios
+            .put(`http://localhost:4000/application/refuse/${id}`, { withCredentials: true })
+            .then((res) => {})
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     return (
         <>
@@ -67,10 +83,16 @@ const SinchungCheckPage = () => {
                                         <span>{applicationInfo.application_reason}</span>
                                     </div>
                                     <div className="flex justify-between mx-40">
-                                        <button className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110">
+                                        <button
+                                            onClick={onAcceptApplication}
+                                            className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+                                        >
                                             수락
                                         </button>
-                                        <button className="shadow-md h-[35px] w-[85px] bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110">
+                                        <button
+                                            onClick={onRefuseApplication}
+                                            className="shadow-md h-[35px] w-[85px] bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                                        >
                                             거절
                                         </button>
                                     </div>
