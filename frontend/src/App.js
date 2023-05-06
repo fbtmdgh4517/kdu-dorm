@@ -10,10 +10,11 @@ import UserPage from './pages/UserPage';
 import WeekDiet from './pages/WeekDiet';
 import MainPage from './pages/MainPage';
 import SignupCheckPage from './pages/SignUpCheckPage';
+import { RecoilRoot } from 'recoil';
 
 function App() {
     return (
-        <>
+        <RecoilRoot>
             <Helmet>
                 <title>경동대학교 메트로폴캠퍼스 기숙사</title>
             </Helmet>
@@ -29,7 +30,7 @@ function App() {
                 <Route path="/weekDiet" element={<WeekDiet />} />
                 <Route path="/notice" element={<NoticePage />} />
             </Routes>
-        </>
+        </RecoilRoot>
     );
 }
 
