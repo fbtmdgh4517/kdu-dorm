@@ -7,12 +7,15 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import HeaderContainer from '../containers/HeaderContainer';
 import SidebarContainer from '../containers/SidebarContainer';
+import { useRecoilValue } from 'recoil';
+import userAuthInfoSelector from '../state';
 
 const UserPage = ({ userName, removeUserHandler }) => {
     const [name, setName] = useState('');
     const [isLoggedOut, setIsLoggedOut] = useState(false);
     const navigate = useNavigate();
     const [applicationInfo, setApplicationInfo] = useState([]);
+    const userAuthInfo = useRecoilValue(userAuthInfoSelector);
 
     const fetchData = async () => {
         await axios
@@ -88,7 +91,7 @@ const UserPage = ({ userName, removeUserHandler }) => {
                                         <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 조회</h1>
                                     </div>
                                     <div className="bg-gray-100 border border-gray-300 text-center p-3 rounded-lg">
-                                        <span className="font-bold">{userName}</span>
+                                        <span className="font-bold">{userAuthInfo.studentName}</span>
                                         <span> 의 상벌점</span>
                                         <div className="flex flex-row mt-16">
                                             <div className="w-1/2 py-2">
