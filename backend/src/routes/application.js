@@ -67,9 +67,12 @@ router.put('/accept/:id', (req, res) => {
 
 router.put('/refuse/:id', (req, res) => {
     console.log('외박신청 거부');
-    const sqlQuery = 'UPDATE overnight_applications SET approval_status = "거부" WHERE application_id = ?';
+    const rejectionReason = req.body.rejection_reason;
 
-    db.query(sqlQuery, [req.params.id], (error, result) => {
+    const sqlQuery =
+        'UPDATE overnight_applications SET approval_status = "거부", rejection_reason = ? WHERE application_id = ?';
+
+    db.query(sqlQuery, [rejectionReason, req.params.id], (error, result) => {
         if (error) throw error;
         res.send(result);
     });
