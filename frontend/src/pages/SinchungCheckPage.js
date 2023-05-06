@@ -5,13 +5,20 @@ import HeaderContainer from '../containers/HeaderContainer';
 import SidebarContainer from '../containers/SidebarContainer';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useForm } from 'react-hook-form';
 
 const SinchungCheckPage = () => {
     //관리자가 체크하는 페이지
     const { id } = useParams();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
     const [applicationInfo, setApplicationInfo] = useState({});
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [isRefused, setIsRefused] = useState(false);
 
     const fetchData = async () => {
         // console.log(id);
@@ -47,10 +54,21 @@ const SinchungCheckPage = () => {
             });
     };
 
-    const onRefuseApplication = async () => {
+    const onRefuseApplication = async (data) => {
         await axios
-            .put(`http://localhost:4000/application/refuse/${id}`, { withCredentials: true })
-            .then((res) => {})
+            .put(
+                `http://localhost:4000/application/refuse/${id}`,
+                {
+                    rejection_reason: data.rejection_reason,
+                },
+                {
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                alert('외박 신청 거절이 처리되었습니다.');
+                window.location.href = '/main';
+            })
             .catch((err) => {
                 console.log(err);
             });
@@ -82,7 +100,7 @@ const SinchungCheckPage = () => {
                                         <h1 className="font-medium">외박 사유</h1>
                                         <span>{applicationInfo.application_reason}</span>
                                     </div>
-                                    <div className="flex justify-between mx-40">
+                                    <div className="flex justify-between mx-40 my-5">
                                         <button
                                             onClick={onAcceptApplication}
                                             className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
@@ -90,12 +108,40 @@ const SinchungCheckPage = () => {
                                             수락
                                         </button>
                                         <button
-                                            onClick={onRefuseApplication}
+                                            onClick={() => {
+                                                setIsRefused(true);
+                                            }}
                                             className="shadow-md h-[35px] w-[85px] bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
                                         >
                                             거절
                                         </button>
                                     </div>
+                                    {isRefused && (
+                                        <form method="put" onSubmit={handleSubmit(onRefuseApplication)}>
+                                            <input
+                                                {...register('rejection_reason', {
+                                                    required: {
+                                                        value: true,
+                                                        message: '거부 사유를 입력하세요',
+                                                    },
+                                                })}
+                                                id="rejection_reason"
+                                                className={
+                                                    errors.rejection_reason
+                                                        ? 'border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2'
+                                                        : 'border border-black container mx-auto rounded-xl shadow-md h-10 px-2'
+                                                }
+                                                // className="border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                placeholder="거부 사유를 입력하세요"
+                                            />
+                                            {errors.rejection_reason && (
+                                                <span className="text-red-500">{errors.rejection_reason.message}</span>
+                                            )}
+                                            <button className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex">
+                                                제출
+                                            </button>
+                                        </form>
+                                    )}
                                 </div>
                             </div>
                         </div>
