@@ -1,23 +1,20 @@
 import axios from 'axios';
-import { selector } from 'recoil';
+import { atom, selector } from 'recoil';
 
-// const userAuthInfoState = {
-//     key: 'userAuthInfoState',
-//     default: {
-//         isLogin: 'False',
-//         isAdmin: false,
-//         studentId: '',
-//         studentName: '',
-//     },
-// }
-
-const userAuthInfoSelector = selector({
-    key: 'userAuthInfo',
-    get: async () => {
-        const { data } = await axios.get('http://localhost:4000/auth/authcheck', { withCredentials: true });
-
-        return data;
+export const userAuthInfoState = atom({
+    key: 'userAuthInfoState',
+    default: {
+        isLogin: 'False',
+        isAdmin: false,
+        studentId: '',
+        studentName: '',
     },
 });
 
-export default userAuthInfoSelector;
+export const userAuthInfoSelector = selector({
+    key: 'userAuthInfo',
+    get: async () => {
+        const data = await axios.get('http://localhost:4000/auth/authcheck', { withCredentials: true });
+        return data;
+    },
+});
