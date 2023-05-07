@@ -19,14 +19,14 @@ router.post('/signupRequest', (req, res) => {
     const sendData = { isSuccess: '' };
 
     if (studentName && studentId && studentDepartment && studentContact && studentRoom && studentPassword) {
-        db.query('SELECT * FROM students where student_id = ?', [studentId], (error, results, fields) => {
+        db.query('SELECT * FROM students where student_id = ?', [studentId], (error, results) => {
             if (error) throw error;
             if (results.length <= 0) {
                 const hashedPassword = bcrypt.hashSync(studentPassword, 10);
                 db.query(
                     'INSERT INTO signup_requests (student_id, student_name, student_department, student_contact, student_room, student_password) VALUES (?, ?, ?, ?, ?, ?)',
                     [studentId, studentName, studentDepartment, studentContact, studentRoom, hashedPassword],
-                    (error, results, fields) => {
+                    (error, results) => {
                         if (error) throw error;
                         sendData.isSuccess = 'True';
                         res.send(sendData);
@@ -41,7 +41,7 @@ router.post('/signupRequest', (req, res) => {
 });
 
 router.get('/signupRequest', (req, res) => {
-    db.query('SELECT * FROM signup_requests', (error, results, fields) => {
+    db.query('SELECT * FROM signup_requests', (error, results) => {
         if (error) throw error;
         console.log(results);
         res.send(results);
@@ -49,9 +49,36 @@ router.get('/signupRequest', (req, res) => {
 });
 
 router.get('/signupRequest/:id', (req, res) => {
-    db.query('SELECT * FROM signup_requests WHERE request_id = ?', [req.params.id], (error, results, fields) => {
+    db.query('SELECT * FROM signup_requests WHERE request_id = ?', [req.params.id], (error, results) => {
         if (error) throw error;
         console.log(results);
+        res.send(results);
+    });
+});
+
+router.put('/signupRequest/accept/:id', (req, res) => {
+    console.log('회원가입 승인');
+    const id = req.params.id;
+    const updateStatusQuery = 'UPDATE signup_requests SET request_status = "승인" WHERE request_id = ?';
+    const insertStudentInfoQuery =
+        'INSERT INTO students (student_id, student_name, student_department, student_contact, student_room, student_password) SELECT student_id, student_name, student_department, student_contact, student_room, student_password FROM signup_requests WHERE request_id = ?';
+
+    db.query(updateStatusQuery, [id], (error, results) => {
+        if (error) throw error;
+        res.send(results);
+    });
+    db.query(insertStudentInfoQuery, [id], (error, results) => {
+        if (error) throw error;
+    });
+});
+
+router.put('/signupRequest/reject/:id', (req, res) => {
+    console.log('회원가입 거절');
+    const id = req.params.id;
+    const rejectionReason = req.body.rejection_reason;
+    const sqlQuery = 'UPDATE signup_requests SET request_status = "거절", rejection_reason = ? WHERE request_id = ?';
+    db.query(sqlQuery, [rejectionReason, id], (error, results) => {
+        if (error) throw error;
         res.send(results);
     });
 });
@@ -63,7 +90,7 @@ router.post('/login', (req, res) => {
     const sendData = { isLogin: '', studentName: '', sessionID: '', isAdmin: '' };
 
     if (id && studentPassword) {
-        db.query('SELECT * FROM students where student_id = ?', [id], (error, results, fields) => {
+        db.query('SELECT * FROM students where student_id = ?', [id], (error, results) => {
             if (error) throw error;
             if (results.length > 0) {
                 bcrypt.compare(studentPassword, results[0].student_password, (err, result) => {
@@ -88,7 +115,7 @@ router.post('/login', (req, res) => {
                 });
             } else if (results.length <= 0) {
                 console.log('관리자');
-                db.query('SELECT * FROM administrators where admin_id = ?', [id], (error, results, fields) => {
+                db.query('SELECT * FROM administrators where admin_id = ?', [id], (error, results) => {
                     console.log(results);
                     if (error) throw error;
                     if (results.length > 0) {
