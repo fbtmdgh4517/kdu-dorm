@@ -8,7 +8,7 @@ import Sidebar from '../components/Sidebar';
 import HeaderContainer from '../containers/HeaderContainer';
 import SidebarContainer from '../containers/SidebarContainer';
 import { useRecoilValue } from 'recoil';
-import userAuthInfoSelector from '../state';
+import { userAuthInfoSelector } from '../state';
 
 const UserPage = ({ userName, removeUserHandler }) => {
     const [name, setName] = useState('');
