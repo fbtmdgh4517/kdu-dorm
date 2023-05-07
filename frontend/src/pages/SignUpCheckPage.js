@@ -3,10 +3,17 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import HeaderContainer from '../containers/HeaderContainer';
 import SidebarContainer from '../containers/SidebarContainer';
+import { useForm } from 'react-hook-form';
 
 const SignupCheckPage = () => {
     const { id } = useParams();
     const [signupRequestInfo, setSignupRequestInfo] = useState({});
+    const [isRejected, setIsRejected] = useState(false);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
     const fetchData = async () => {
         await axios
@@ -23,6 +30,36 @@ const SignupCheckPage = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const onAcceptSignupRequest = async () => {
+        await axios
+            .put(`http://localhost:4000/auth/signupRequest/accept/${id}`, { withCredentials: true })
+            .then((res) => {
+                alert('회원가입 요청 승인이 완료되었습니다.');
+                window.location.href = '/main';
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const onRejectSignupRequest = async (data) => {
+        await axios
+            .put(
+                `http://localhost:4000/auth/signupRequest/reject/${id}`,
+                {
+                    rejection_reason: data.rejection_reason,
+                },
+                { withCredentials: true }
+            )
+            .then((res) => {
+                alert('회원가입 요청 거부가 완료되었습니다.');
+                window.location.href = '/main';
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     return (
         <>
@@ -59,13 +96,47 @@ const SignupCheckPage = () => {
                                         <span>{signupRequestInfo.student_room}</span>
                                     </div>
                                     <div className="flex justify-between mx-40">
-                                        <button className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110">
+                                        <button
+                                            onClick={onAcceptSignupRequest}
+                                            className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+                                        >
                                             수락
                                         </button>
-                                        <button className="shadow-md h-[35px] w-[85px] bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110">
+                                        <button
+                                            onClick={() => {
+                                                setIsRejected(true);
+                                            }}
+                                            className="shadow-md h-[35px] w-[85px] bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                                        >
                                             거절
                                         </button>
                                     </div>
+                                    {isRejected && (
+                                        <form method="put" onSubmit={handleSubmit(onRejectSignupRequest)}>
+                                            <input
+                                                {...register('rejection_reason', {
+                                                    required: {
+                                                        value: true,
+                                                        message: '거부 사유를 입력하세요',
+                                                    },
+                                                })}
+                                                id="rejection_reason"
+                                                className={
+                                                    errors.rejection_reason
+                                                        ? 'border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2'
+                                                        : 'border border-black container mx-auto rounded-xl shadow-md h-10 px-2'
+                                                }
+                                                // className="border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                placeholder="거부 사유를 입력하세요"
+                                            />
+                                            {errors.rejection_reason && (
+                                                <span className="text-red-500">{errors.rejection_reason.message}</span>
+                                            )}
+                                            <button className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex">
+                                                제출
+                                            </button>
+                                        </form>
+                                    )}
                                 </div>
                             </div>
                         </div>
