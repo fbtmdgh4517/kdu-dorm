@@ -48,7 +48,10 @@ const SinchungCheckPage = () => {
     const onAcceptApplication = async () => {
         await axios
             .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
-            .then((res) => {})
+            .then((res) => {
+                alert('외박 신청 승인이 완료되었습니다.');
+                window.location.href = '/main';
+            })
             .catch((err) => {
                 console.log(err);
             });
@@ -66,7 +69,7 @@ const SinchungCheckPage = () => {
                 }
             )
             .then((res) => {
-                alert('외박 신청 거절이 처리되었습니다.');
+                alert('외박 신청 거부가 완료되었습니다.');
                 window.location.href = '/main';
             })
             .catch((err) => {
@@ -100,10 +103,10 @@ const SinchungCheckPage = () => {
                                         <h1 className="font-medium">외박 사유</h1>
                                         <span>{applicationInfo.application_reason}</span>
                                     </div>
-                                    <div className="flex justify-between mx-40 my-5">
+                                    <div className="flex justify-between  md:mx-40 my-5">
                                         <button
                                             onClick={onAcceptApplication}
-                                            className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+                                            className="shadow-md h-9 w-20 bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
                                         >
                                             수락
                                         </button>
@@ -111,7 +114,7 @@ const SinchungCheckPage = () => {
                                             onClick={() => {
                                                 setIsRefused(true);
                                             }}
-                                            className="shadow-md h-[35px] w-[85px] bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                                            className="shadow-md h-9 w-20 bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
                                         >
                                             거절
                                         </button>
