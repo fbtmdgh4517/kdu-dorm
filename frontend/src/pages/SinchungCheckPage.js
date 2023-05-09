@@ -50,7 +50,6 @@ const SinchungCheckPage = () => {
             .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
             .then((res) => {
                 alert('외박 신청 승인이 완료되었습니다.');
-                window.location.href = '/main';
             })
             .catch((err) => {
                 console.log(err);
@@ -70,7 +69,6 @@ const SinchungCheckPage = () => {
             )
             .then((res) => {
                 alert('외박 신청 거부가 완료되었습니다.');
-                window.location.href = '/main';
             })
             .catch((err) => {
                 console.log(err);
