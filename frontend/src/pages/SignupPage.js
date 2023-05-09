@@ -176,12 +176,12 @@ const SignupPage = () => {
                                     message: '호실을 입력하세요',
                                 },
                                 minLength: {
-                                    value: 4,
-                                    message: '호실은 4자이어야 합니다.',
+                                    value: 3,
+                                    message: '호실은 3자이어야 합니다.',
                                 },
                                 maxLength: {
-                                    value: 4,
-                                    message: '호실은 4자이어야 합니다.',
+                                    value: 3,
+                                    message: '호실은 3자이어야 합니다.',
                                 },
                                 validate: {
                                     isNumber: (value) => {
