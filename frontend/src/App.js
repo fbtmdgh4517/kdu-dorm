@@ -11,6 +11,7 @@ import WeekDiet from './pages/WeekDiet';
 import MainPage from './pages/MainPage';
 import SignupCheckPage from './pages/SignUpCheckPage';
 import { RecoilRoot } from 'recoil';
+import PointPage from './pages/PointPage';
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/signupRequestCheck/:id" element={<SignupCheckPage />} />
                 <Route path="/weekDiet" element={<WeekDiet />} />
                 <Route path="/notice" element={<NoticePage />} />
+                <Route path="/managePoint" element={<PointPage />} />
             </Routes>
         </RecoilRoot>
     );
