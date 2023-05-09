@@ -13,6 +13,7 @@ const noticeRouter = require('./routes/notice');
 const weekDietRouter = require('./routes/weekDiet');
 const authRouter = require('./routes/auth');
 const applicationRouter = require('./routes/application');
+const studentsRouter = require('./routes/students');
 
 const envPath = path.join(__dirname, '../.env');
 require('dotenv').config({ path: envPath });
@@ -74,6 +75,7 @@ app.use('/notice', noticeRouter);
 app.use('/weekDiet', weekDietRouter);
 app.use('/auth', authRouter);
 app.use('/application', applicationRouter);
+app.use('/students', studentsRouter);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
