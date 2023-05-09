@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Sidebar = ({ onLogout }) => {
     return (
         <>
@@ -18,11 +20,14 @@ const Sidebar = ({ onLogout }) => {
                                         <span className="ml-3">로그아웃</span>
                                     </button>
                                 </li>
-                                {/* <li>
-                                        <Link className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-                                            <span className="ml-3">회원가입</span>
-                                        </Link>
-                                    </li> */}
+                                <li>
+                                    <Link
+                                        to="/managePoint"
+                                        className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group"
+                                    >
+                                        <span className="ml-3">상벌점 부여</span>
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
                     </div>
