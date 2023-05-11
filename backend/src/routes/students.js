@@ -38,4 +38,14 @@ router.put('/penaltyPoint', (req, res) => {
         res.status(200).send('벌점 부여 완료');
     });
 });
+
+router.get('/studentInfo/:id', (req, res) => {
+    const studentId = req.params.id;
+    const query = 'SELECT * FROM students WHERE student_id = ?';
+    db.query(query, [studentId], (error, results) => {
+        if (error) throw error;
+        res.send(results);
+    });
+})
+
 module.exports = router;
