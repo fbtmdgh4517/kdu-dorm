@@ -1,24 +1,22 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const passport = require('passport');
-const path = require('path');
-const { sequelize } = require('./models');
-const passportConfig = require('./passport');
-const MySQLStore = require('express-mysql-session')(session);
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const passport = require("passport");
+const path = require("path");
+const MySQLStore = require("express-mysql-session")(session);
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 
-const noticeRouter = require('./routes/notice');
-const weekDietRouter = require('./routes/weekDiet');
-const authRouter = require('./routes/auth');
-const applicationRouter = require('./routes/application');
-const studentsRouter = require('./routes/students');
+const noticeRouter = require("./routes/notice");
+const weekDietRouter = require("./routes/weekDiet");
+const authRouter = require("./routes/auth");
+const applicationRouter = require("./routes/application");
+const studentsRouter = require("./routes/students");
 
-const envPath = path.join(__dirname, '../.env');
-require('dotenv').config({ path: envPath });
-passportConfig();
-const { COOKIE_SECRET, PORT, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+const envPath = path.join(__dirname, "../.env");
+require("dotenv").config({ path: envPath });
+const { COOKIE_SECRET, PORT, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } =
+    process.env;
 
 const options = {
     host: DB_HOST,
@@ -54,37 +52,37 @@ app.use(
             secure: false,
             maxAge: 60 * 60 * 1000 * 24,
         },
-        name: 'session-cookie',
+        name: "session-cookie",
     })
 );
 
 app.use(
     cors({
-        origin: 'http://localhost:3000',
+        origin: "http://localhost:3000",
         credentials: true,
     })
 );
-app.use('/', express.static(path.join(__dirname, '../../frontend/build')));
+app.use("/", express.static(path.join(__dirname, "../../frontend/build")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(COOKIE_SECRET));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/notice', noticeRouter);
-app.use('/weekDiet', weekDietRouter);
-app.use('/auth', authRouter);
-app.use('/application', applicationRouter);
-app.use('/students', studentsRouter);
+app.use("/notice", noticeRouter);
+app.use("/weekDiet", weekDietRouter);
+app.use("/auth", authRouter);
+app.use("/application", applicationRouter);
+app.use("/students", studentsRouter);
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../frontend/build/index.html"));
 });
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../frontend/build/index.html"));
 });
 
 const port = PORT || 4000;
 app.listen(port, () => {
-    console.log(port, '번 포트에서 대기 중');
+    console.log(port, "번 포트에서 대기 중");
 });
