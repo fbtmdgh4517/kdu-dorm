@@ -1,11 +1,13 @@
-import { Link, useParams } from 'react-router-dom';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import HeaderContainer from '../containers/HeaderContainer';
-import SidebarContainer from '../containers/SidebarContainer';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useForm } from 'react-hook-form';
+import { Link, useParams } from "react-router-dom";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import HeaderContainer from "../containers/HeaderContainer";
+import SidebarContainer from "../containers/SidebarContainer";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { useRecoilValue } from "recoil";
+import { userAuthInfoSelector } from "../state";
 
 const SinchungCheckPage = () => {
     //관리자가 체크하는 페이지
@@ -16,9 +18,11 @@ const SinchungCheckPage = () => {
         formState: { errors },
     } = useForm();
     const [applicationInfo, setApplicationInfo] = useState({});
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [isRefused, setIsRefused] = useState(false);
+    const [isUpdateBtnClicked, setIsUpdateBtnClicked] = useState(false);
+    const userAuthInfo = useRecoilValue(userAuthInfoSelector);
 
     const fetchData = async () => {
         // console.log(id);
@@ -49,7 +53,7 @@ const SinchungCheckPage = () => {
         await axios
             .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
             .then((res) => {
-                alert('외박 신청 승인이 완료되었습니다.');
+                alert("외박 신청 승인이 완료되었습니다.");
             })
             .catch((err) => {
                 console.log(err);
@@ -68,11 +72,21 @@ const SinchungCheckPage = () => {
                 }
             )
             .then((res) => {
-                alert('외박 신청 거부가 완료되었습니다.');
+                alert("외박 신청 거부가 완료되었습니다.");
             })
             .catch((err) => {
                 console.log(err);
             });
+    };
+
+    const onSubmit = async (data) => {
+        const { start_date, end_date, reason } = data;
+        const res = await axios.patch(`http://localhost:4000/application/update/${id}`, { start_date, end_date, reason }, { withCredentials: true });
+        if (res.status === 200) {
+            alert("외박 신청 수정이 완료되었습니다.");
+            setIsUpdateBtnClicked(false);
+            fetchData();
+        }
     };
 
     return (
@@ -89,59 +103,156 @@ const SinchungCheckPage = () => {
                                     <div className="flex items-center justify-between mb-4">
                                         <h1 className="text-xl font-bold leading-none text-gray-900">외박신청</h1>
                                     </div>
-                                    <div className="container mx-auto mb-5">
-                                        <h1 className="font-medium">외박 시작일</h1>
-                                        <span>{startDate}</span>
-                                    </div>
-                                    <div className="container mx-auto mb-5">
-                                        <h1 className="font-medium">외박 종료일</h1>
-                                        <span>{endDate}</span>
-                                    </div>
-                                    <div className="container mx-auto mb-5">
-                                        <h1 className="font-medium">외박 사유</h1>
-                                        <span>{applicationInfo.application_reason}</span>
-                                    </div>
-                                    <div className="flex justify-between  md:mx-40 my-5">
-                                        <button
-                                            onClick={onAcceptApplication}
-                                            className="shadow-md h-9 w-20 bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
-                                        >
-                                            수락
-                                        </button>
+                                    {isUpdateBtnClicked ? (
+                                        <>
+                                            <form onSubmit={handleSubmit(onSubmit)}>
+                                                <div className="container mx-auto mb-5">
+                                                    <label htmlFor="start_date" className="font-medium">
+                                                        외박 시작일
+                                                    </label>
+                                                    <input
+                                                        {...register("start_date", {
+                                                            required: { value: true, message: "외박 시작일을 입력하세요" },
+                                                        })}
+                                                        id="start_date"
+                                                        className={
+                                                            errors.start_date
+                                                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                        }
+                                                        type="date"
+                                                        min={new Date().toISOString().split("T")[0]}
+                                                    />
+                                                    {errors.start_date && <span className="text-red-500">{errors.start_date.message}</span>}
+                                                </div>
+                                                <div className="container mx-auto mb-5">
+                                                    <label htmlFor="end_date" className="font-medium">
+                                                        외박 종료일
+                                                    </label>
+                                                    <input
+                                                        {...register("end_date", {
+                                                            required: { value: true, message: "외박 종료일을 입력하세요" },
+                                                        })}
+                                                        id="end_date"
+                                                        className={
+                                                            errors.end_date
+                                                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                        }
+                                                        type="date"
+                                                        min={new Date().toISOString().split("T")[0]}
+                                                    />
+                                                    {errors.end_date && <span className="text-red-500">{errors.end_date.message}</span>}
+                                                </div>
+                                                <div className="container mx-auto mb-5">
+                                                    <label htmlFor="reason" className="font-medium">
+                                                        외박 사유
+                                                    </label>
+                                                    <input
+                                                        {...register("reason", {
+                                                            required: { value: true, message: "외박 사유를 입력하세요" },
+                                                        })}
+                                                        id="reason"
+                                                        className={
+                                                            errors.reason
+                                                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                        }
+                                                        type="text"
+                                                    />
+                                                    {errors.reason && <span className="text-red-500">{errors.reason.message}</span>}
+                                                </div>
+                                                <div className="flex justify-between  md:mx-40 my-5">
+                                                    <button
+                                                        type="submit"
+                                                        className="shadow-md h-9 w-20 bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+                                                    >
+                                                        수정
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setIsUpdateBtnClicked(!isUpdateBtnClicked);
+                                                        }}
+                                                        className="shadow-md h-9 w-20 bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                                                    >
+                                                        취소
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="container mx-auto mb-5">
+                                                <h1 className="font-medium">외박 시작일</h1>
+                                                <span>{startDate}</span>
+                                            </div>
+                                            <div className="container mx-auto mb-5">
+                                                <h1 className="font-medium">외박 종료일</h1>
+                                                <span>{endDate}</span>
+                                            </div>
+                                            <div className="container mx-auto mb-5">
+                                                <h1 className="font-medium">외박 사유</h1>
+                                                <span>{applicationInfo.application_reason}</span>
+                                            </div>
+                                        </>
+                                    )}
+                                    {!userAuthInfo.data.isAdmin && !isUpdateBtnClicked && applicationInfo.approval_status === "미확인" && (
                                         <button
                                             onClick={() => {
-                                                setIsRefused(true);
+                                                setIsUpdateBtnClicked(!isUpdateBtnClicked);
                                             }}
-                                            className="shadow-md h-9 w-20 bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                                            className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
                                         >
-                                            거절
+                                            수정
                                         </button>
-                                    </div>
-                                    {isRefused && (
+                                    )}
+                                    {userAuthInfo.data.isAdmin && applicationInfo.approval_status === "미확인" && (
+                                        <div className="flex justify-between  md:mx-40 my-5">
+                                            <button
+                                                onClick={onAcceptApplication}
+                                                className="shadow-md h-9 w-20 bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+                                            >
+                                                수락
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setIsRefused(true);
+                                                }}
+                                                className="shadow-md h-9 w-20 bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                                            >
+                                                거절
+                                            </button>
+                                        </div>
+                                    )}
+                                    {userAuthInfo.data.isAdmin && isRefused && (
                                         <form method="put" onSubmit={handleSubmit(onRefuseApplication)}>
                                             <input
-                                                {...register('rejection_reason', {
+                                                {...register("rejection_reason", {
                                                     required: {
                                                         value: true,
-                                                        message: '거부 사유를 입력하세요',
+                                                        message: "거부 사유를 입력하세요",
                                                     },
                                                 })}
                                                 id="rejection_reason"
                                                 className={
                                                     errors.rejection_reason
-                                                        ? 'border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2'
-                                                        : 'border border-black container mx-auto rounded-xl shadow-md h-10 px-2'
+                                                        ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                                        : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
                                                 }
                                                 // className="border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
                                                 placeholder="거부 사유를 입력하세요"
                                             />
-                                            {errors.rejection_reason && (
-                                                <span className="text-red-500">{errors.rejection_reason.message}</span>
-                                            )}
+                                            {errors.rejection_reason && <span className="text-red-500">{errors.rejection_reason.message}</span>}
                                             <button className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex">
                                                 제출
                                             </button>
                                         </form>
+                                    )}
+                                    {applicationInfo.approval_status === "승인" && (
+                                        <div className="text-center text-green-600 font-medium text-lg mt-4">승인된 외박신청입니다.</div>
+                                    )}
+                                    {applicationInfo.approval_status === "거부" && (
+                                        <div className="text-center text-red-600 font-medium text-lg mt-4">거부된 외박신청입니다.</div>
                                     )}
                                 </div>
                             </div>
