@@ -18,3 +18,12 @@ export const userAuthInfoSelector = selector({
         return data;
     },
 });
+
+export const studentListSelector = selector({
+    key: 'studentList',
+    get: async () => {
+        const res = await axios.get('http://localhost:4000/students/list', {withCredentials: true});
+        return res;
+    }
+})
+
