@@ -10,58 +10,12 @@ import SidebarContainer from "../containers/SidebarContainer";
 import { useRecoilValue } from "recoil";
 import { userAuthInfoSelector } from "../state";
 import Pagination from "react-js-pagination";
+import UserApplicationList from "../components/UserApplicationList";
+import UserCurrentPoint from "../components/UserCurrentPoint";
+import UserPointRecords from "../components/UserPointRecords";
 
 const UserPage = ({ userName, removeUserHandler }) => {
     const navigate = useNavigate();
-    const [name, setName] = useState("");
-    const [isLoggedOut, setIsLoggedOut] = useState(false);
-    const [applicationInfo, setApplicationInfo] = useState([]);
-    const [studentCurrentBonus, setStudentCurrentBonus] = useState(0);
-    const [studentCurrentPenalty, setStudentCurrentPenalty] = useState(0);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(5);
-    const offset = (page - 1) * limit;
-    const userAuthInfo = useRecoilValue(userAuthInfoSelector);
-
-    // console.log(userAuthInfo);
-
-    const fetchStudentInfo = async () => {
-        const res = await axios.get(`http://localhost:4000/students/studentInfo/${userAuthInfo.data.studentId}`, { withCredentials: true });
-        console.log(res.data);
-        setStudentCurrentBonus(res.data[0].bonus_point);
-        setStudentCurrentPenalty(res.data[0].penalty_point);
-    };
-
-    const fetchData = async () => {
-        await axios
-            .get("http://localhost:4000/application/ownlist", { withCredentials: true })
-            .then((res) => {
-                console.log(res.data);
-                setApplicationInfo(
-                    res.data.sort((a, b) => {
-                        return new Date(b.application_time) - new Date(a.application_time);
-                    })
-                );
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    useEffect(() => {
-        fetchData();
-        fetchStudentInfo();
-    }, []);
-
-    const onLogout = async () => {
-        await axios.get("http://localhost:4000/auth/logout", { withCredentials: true }).then((res) => {});
-        removeUserHandler();
-        navigate("/");
-    };
-
-    const pageChangeHandler = (page) => {
-        setPage(page);
-    };
 
     return (
         <>
@@ -74,47 +28,7 @@ const UserPage = ({ userName, removeUserHandler }) => {
                             <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4">
                                 <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                                     {/* 카드 */}
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 목록</h1>
-                                        <Link
-                                            to="/sinchung"
-                                            className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
-                                        >
-                                            외박신청
-                                        </Link>
-                                    </div>
-                                    {applicationInfo.slice(offset, offset + limit).map((application) => {
-                                        const applicationYear = new Date(application.application_time).getFullYear();
-                                        const applicationMonth = new Date(application.application_time).getMonth() + 1;
-                                        const applicationDate = new Date(application.application_time).getDate();
-                                        return (
-                                            <div key={application.application_id} className="max-w-md container mx-auto mb-4">
-                                                <Link
-                                                    to={`/sinchungCheck/${application.application_id}`}
-                                                    className="border border-black max-w-md container mx-auto rounded-xl shadow-md h-10 px-2 flex items-center justify-between"
-                                                >
-                                                    {`${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}
-                                                    <span className="text-blue-700 font-bold">{application.approval_status}</span>
-                                                </Link>
-                                            </div>
-                                        );
-                                    })}
-                                    <div className="mx-auto items-center flex justify-center mt-6">
-                                        <Pagination
-                                            innerClass="inline-flex items-center -space-x-px"
-                                            itemClassFirst="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700"
-                                            itemClassLast="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
-                                            itemClass="px-3 py-2 leading-tight border border-gray-300"
-                                            activeClass="z-10 px-3 py-2 leading-tight bg-blue-500 text-white border border-blue-300"
-                                            activePage={page}
-                                            itemsCountPerPage={limit}
-                                            totalItemsCount={applicationInfo.length}
-                                            pageRangeDisplayed={5}
-                                            prevPageText={"<"}
-                                            nextPageText={">"}
-                                            onChange={pageChangeHandler}
-                                        />
-                                    </div>
+                                    <UserApplicationList></UserApplicationList>
                                 </div>
                                 <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                                     {/* 카드 */}
@@ -128,23 +42,9 @@ const UserPage = ({ userName, removeUserHandler }) => {
                                 </div>
                                 <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                                     {/* 카드 */}
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 조회</h1>
-                                    </div>
-                                    <div className="bg-gray-100 border border-gray-300 text-center p-3 rounded-lg">
-                                        <span className="font-bold">{userAuthInfo.data.studentName}</span>
-                                        <span> 의 상벌점</span>
-                                        <div className="flex flex-row mt-16">
-                                            <div className="w-1/2 py-2">
-                                                <span>상점 :</span>
-                                                <span>{studentCurrentBonus}</span>
-                                            </div>
-                                            <div className="w-1/2 py-2">
-                                                <span>벌점 :</span>
-                                                <span>{studentCurrentPenalty}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <UserCurrentPoint></UserCurrentPoint>
+                                    <br></br>
+                                    <UserPointRecords></UserPointRecords>
                                 </div>
                             </div>
                         </div>
