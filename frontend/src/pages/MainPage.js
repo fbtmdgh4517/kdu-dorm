@@ -1,26 +1,28 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import AdminPage from './AdminPage';
-import UserPage from './UserPage';
-import { useRecoilRefresher_UNSTABLE, useRecoilState } from 'recoil';
-import userAuthInfoState from '../state';
-import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
-import { userAuthInfoSelector } from '../state';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import AdminPage from "./AdminPage";
+import UserPage from "./UserPage";
+import { useRecoilRefresher_UNSTABLE, useRecoilState } from "recoil";
+import userAuthInfoState, { studentInfoSelector } from "../state";
+import { useRecoilValue, useRecoilValueLoadable } from "recoil";
+import { userAuthInfoSelector } from "../state";
 
-const { Link } = require('react-router-dom');
+const { Link } = require("react-router-dom");
 
 const MainPage = () => {
-    const [user, setUser] = useState('');
+    const [user, setUser] = useState("");
     const [isLogin, setIsLogin] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [admin, setAdmin] = useState('');
+    const [admin, setAdmin] = useState("");
     // const [userAuthInfo, setUserAuthInfo] = useRecoilState(userAuthInfoState);
     const userAuthInfo = useRecoilValueLoadable(userAuthInfoSelector);
     // const userAuthInfo = useRecoilValue(userAuthInfoSelector);
     const refreshUserAuthInfo = useRecoilRefresher_UNSTABLE(userAuthInfoSelector);
+    const refreshStudentInfo = useRecoilRefresher_UNSTABLE(studentInfoSelector);
 
     useEffect(() => {
         refreshUserAuthInfo();
+        refreshStudentInfo();
         console.log(userAuthInfo);
         // console.log(userAuthInfo.data);
         // if (userAuthInfo.data.isLogin === 'False') {
@@ -55,15 +57,15 @@ const MainPage = () => {
     };
 
     switch (userAuthInfo.state) {
-        case 'loading':
+        case "loading":
             return <div>loading...</div>;
-        case 'hasError':
+        case "hasError":
             return <div>error...</div>;
         default:
             console.log(userAuthInfo.contents);
-            if (userAuthInfo.contents.data.isLogin === 'True' && userAuthInfo.contents.data.isAdmin) {
+            if (userAuthInfo.contents.data.isLogin === "True" && userAuthInfo.contents.data.isAdmin) {
                 return <AdminPage admin={admin} removeUserHandler={removeUserHandler}></AdminPage>;
-            } else if (userAuthInfo.contents.data.isLogin === 'True' && !userAuthInfo.contents.data.isAdmin) {
+            } else if (userAuthInfo.contents.data.isLogin === "True" && !userAuthInfo.contents.data.isAdmin) {
                 return <UserPage userName={user} removeUserHandler={removeUserHandler}></UserPage>;
             }
     }
