@@ -89,4 +89,14 @@ router.patch("/update/:id", (req, res) => {
     });
 });
 
+router.delete("/delete/:id", (req, res) => {
+    console.log("외박신청 삭제");
+    const sqlQuery = "DELETE FROM overnight_applications WHERE application_id = ?";
+
+    db.query(sqlQuery, [req.params.id], (error, result) => {
+        if (error) throw error;
+        res.send(result);
+    });
+});
+
 module.exports = router;
