@@ -3,7 +3,15 @@ const db = require("../../db");
 const router = express.Router();
 
 router.get("/list", (req, res) => {
-    db.query("SELECT * FROM students", (error, results) => {
+    db.query("SELECT * FROM students ORDER BY student_name", (error, results) => {
+        if (error) throw error;
+        res.send(results);
+    });
+});
+
+router.get("/penaltyDangerStudentsList", (req, res) => {
+    const query = "SELECT * FROM students WHERE penalty_point >= 7 ORDER BY penalty_point DESC";
+    db.query(query, (error, results) => {
         if (error) throw error;
         res.send(results);
     });
@@ -39,6 +47,15 @@ router.put("/penaltyPoint", (req, res) => {
 
 router.get("/studentInfo", (req, res) => {
     const studentId = req.session.student_id;
+    const query = "SELECT * FROM students WHERE student_id = ?";
+    db.query(query, [studentId], (error, results) => {
+        if (error) throw error;
+        res.send(results);
+    });
+});
+
+router.get("/studentInfo/:id", (req, res) => {
+    const studentId = req.params.id;
     const query = "SELECT * FROM students WHERE student_id = ?";
     db.query(query, [studentId], (error, results) => {
         if (error) throw error;
