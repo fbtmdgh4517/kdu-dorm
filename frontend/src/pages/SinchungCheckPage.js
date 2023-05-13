@@ -58,6 +58,7 @@ const SinchungCheckPage = () => {
             .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
             .then((res) => {
                 alert("외박 신청 승인이 완료되었습니다.");
+                fetchData();
             })
             .catch((err) => {
                 console.log(err);
@@ -77,6 +78,7 @@ const SinchungCheckPage = () => {
             )
             .then((res) => {
                 alert("외박 신청 거부가 완료되었습니다.");
+                fetchData();
             })
             .catch((err) => {
                 console.log(err);
@@ -230,15 +232,15 @@ const SinchungCheckPage = () => {
                                         <div className="flex justify-between  md:mx-40 my-5">
                                             <button
                                                 onClick={onAcceptApplication}
-                                                className="shadow-md h-9 w-20 bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+                                                className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
                                             >
                                                 수락
                                             </button>
                                             <button
                                                 onClick={() => {
-                                                    setIsRefused(true);
+                                                    setIsRefused(!isRefused);
                                                 }}
-                                                className="shadow-md h-9 w-20 bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                                                className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
                                             >
                                                 거절
                                             </button>
@@ -263,9 +265,22 @@ const SinchungCheckPage = () => {
                                                 placeholder="거부 사유를 입력하세요"
                                             />
                                             {errors.rejection_reason && <span className="text-red-500">{errors.rejection_reason.message}</span>}
-                                            <button className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex">
-                                                제출
-                                            </button>
+                                            <div className="flex justify-between  md:mx-40 my-5">
+                                                <button
+                                                    type="submit"
+                                                    className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                                                >
+                                                    제출
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setIsRefused(!isRefused);
+                                                    }}
+                                                    className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                                                >
+                                                    취소
+                                                </button>
+                                            </div>
                                         </form>
                                     )}
                                     {applicationInfo.approval_status === "승인" && (
