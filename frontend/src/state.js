@@ -11,6 +11,11 @@ export const userAuthInfoState = atom({
     },
 });
 
+export const studentIdState = atom({
+    key: "studentIdState",
+    default: 0,
+});
+
 export const userAuthInfoSelector = selector({
     key: "userAuthInfo",
     get: async () => {
@@ -31,6 +36,15 @@ export const studentInfoSelector = selector({
     key: "studentInfo",
     get: async () => {
         const res = await axios.get("http://localhost:4000/students/studentInfo", { withCredentials: true });
+        return res.data[0];
+    },
+});
+
+export const studentInfoSelectorById = selector({
+    key: "studentInfoById",
+    get: async ({ get }) => {
+        const studentId = get(studentIdState);
+        const res = await axios.get(`http://localhost:4000/students/studentInfo/${studentId}`, { withCredentials: true });
         return res.data[0];
     },
 });
