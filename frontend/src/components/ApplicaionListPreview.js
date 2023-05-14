@@ -1,47 +1,13 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Pagination from "react-js-pagination";
 import { Link } from "react-router-dom";
 
-const ApplicationListPreview = () => {
-    const [applicationInfo, setApplicationInfo] = useState([]);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(6);
-    const offset = (page - 1) * limit;
-
-    const fetchData = async () => {
-        try {
-            const res = await axios.get("http://localhost:4000/application/list", { withCredentials: true });
-            setApplicationInfo(
-                res.data.sort((a, b) => {
-                    return new Date(b.application_time) - new Date(a.application_time);
-                })
-            );
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const pageChangeHandler = (page) => {
-        setPage(page);
-    };
-
+const ApplicationListPreview = ({ applicationInfo, page, pageChangeHandler, offset }) => {
     return (
         <>
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 목록</h1>
-                {/* <Link
-                    to="/sinchung"
-                    className="shadow-md h-[30px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
-                >
-                    외박신청
-                </Link> */}
             </div>
-            {applicationInfo.slice(offset, offset + limit).map((application) => {
+            {applicationInfo.slice(offset, offset + 5).map((application) => {
                 const applicationYear = new Date(application.application_time).getFullYear();
                 const applicationMonth = new Date(application.application_time).getMonth() + 1;
                 const applicationDate = new Date(application.application_time).getDate();
@@ -65,7 +31,7 @@ const ApplicationListPreview = () => {
                     itemClass="px-3 py-2 leading-tight border border-gray-300"
                     activeClass="z-10 px-3 py-2 leading-tight bg-blue-500 text-white border border-blue-300"
                     activePage={page}
-                    itemsCountPerPage={limit}
+                    itemsCountPerPage={5}
                     totalItemsCount={applicationInfo.length}
                     pageRangeDisplayed={5}
                     prevPageText={"<"}

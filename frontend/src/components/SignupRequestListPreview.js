@@ -1,40 +1,13 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Pagination from 'react-js-pagination';
-import { Link } from 'react-router-dom';
+import Pagination from "react-js-pagination";
+import { Link } from "react-router-dom";
 
-const SignupRequestListPreview = () => {
-    const [signupRequests, setSignupRequests] = useState([]);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(6);
-    const offset = (page - 1) * limit;
-
-    const fetchData = async () => {
-        try {
-            const res = await axios.get('http://localhost:4000/auth/signupRequest', {
-                withCredentials: true,
-            });
-            console.log(res.data);
-            setSignupRequests(res.data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const pageChangeHandler = (page) => {
-        setPage(page);
-    };
-
+const SignupRequestListPreview = ({ signupRequests, page, pageChangeHandler, offset }) => {
     return (
         <>
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-xl font-bold leading-none text-gray-900">회원가입 신청 목록</h1>
             </div>
-            {signupRequests.slice(offset, offset + limit).map((request) => {
+            {signupRequests.slice(offset, offset + 5).map((request) => {
                 return (
                     <div key={request.request_id} className="max-w-md container mx-auto mb-4">
                         <Link
@@ -55,11 +28,11 @@ const SignupRequestListPreview = () => {
                     itemClass="px-3 py-2 leading-tight border border-gray-300"
                     activeClass="z-10 px-3 py-2 leading-tight bg-blue-500 text-white border border-blue-300"
                     activePage={page}
-                    itemsCountPerPage={limit}
+                    itemsCountPerPage={5}
                     totalItemsCount={signupRequests.length}
                     pageRangeDisplayed={5}
-                    prevPageText={'<'}
-                    nextPageText={'>'}
+                    prevPageText={"<"}
+                    nextPageText={">"}
                     onChange={pageChangeHandler}
                 />
             </div>

@@ -1,11 +1,4 @@
-import { useEffect, useState } from "react";
-import { studentInfoSelector } from "../state";
-import { useRecoilValue, useRecoilValueLoadable } from "recoil";
-import axios from "axios";
-
-const UserCurrentPoint = () => {
-    const studentInfo = useRecoilValueLoadable(studentInfoSelector);
-
+const UserCurrentPoint = ({ studentInfo }) => {
     return (
         <>
             <div className="flex items-center justify-between mb-4">

@@ -1,38 +1,7 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Pagination from "react-js-pagination";
 import { Link } from "react-router-dom";
 
-const UserApplicationList = () => {
-    const [applicationInfo, setApplicationInfo] = useState([]);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(5);
-    const offset = (page - 1) * limit;
-
-    const fetchData = async () => {
-        await axios
-            .get("http://localhost:4000/application/ownlist", { withCredentials: true })
-            .then((res) => {
-                console.log(res.data);
-                setApplicationInfo(
-                    res.data.sort((a, b) => {
-                        return new Date(b.application_time) - new Date(a.application_time);
-                    })
-                );
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const pageChangeHandler = (page) => {
-        setPage(page);
-    };
-
+const UserApplicationList = ({ applicationInfo, page, pageChangeHandler, offset }) => {
     return (
         <>
             <div className="flex items-center justify-between mb-4">
@@ -44,7 +13,7 @@ const UserApplicationList = () => {
                     외박신청
                 </Link>
             </div>
-            {applicationInfo.slice(offset, offset + limit).map((application) => {
+            {applicationInfo.slice(offset, offset + 5).map((application) => {
                 const applicationYear = new Date(application.application_time).getFullYear();
                 const applicationMonth = new Date(application.application_time).getMonth() + 1;
                 const applicationDate = new Date(application.application_time).getDate();
@@ -68,7 +37,7 @@ const UserApplicationList = () => {
                     itemClass="px-3 py-2 leading-tight border border-gray-300"
                     activeClass="z-10 px-3 py-2 leading-tight bg-blue-500 text-white border border-blue-300"
                     activePage={page}
-                    itemsCountPerPage={limit}
+                    itemsCountPerPage={5}
                     totalItemsCount={applicationInfo.length}
                     pageRangeDisplayed={5}
                     prevPageText={"<"}

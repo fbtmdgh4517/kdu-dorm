@@ -1,31 +1,9 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Pagination from "react-js-pagination";
 
-const UserPointRecords = () => {
-    const [studentPointRecords, setStudentPointRecords] = useState([]);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(5);
-    const offset = (page - 1) * limit;
-
-    const fetchPointRecords = async () => {
-        const res = await axios.get("http://localhost:4000/students/pointRecords", { withCredentials: true });
-        console.log("상벌점 기록");
-        console.log(res.data);
-        setStudentPointRecords(res.data);
-    };
-
-    useEffect(() => {
-        fetchPointRecords();
-    }, []);
-
-    const pageChangeHandler = (page) => {
-        setPage(page);
-    };
-
+const UserPointRecords = ({ studentPointRecords, pageChangeHandler, page, offset }) => {
     return (
         <div className="bg-gray-100 border border-gray-300 text-center p-3 rounded-lg">
-            {studentPointRecords.slice(offset, offset + limit).map((record) => {
+            {studentPointRecords.slice(offset, offset + 5).map((record) => {
                 return (
                     <div key={record.record_id} className="flex m-3 justify-between">
                         <div>
@@ -49,7 +27,7 @@ const UserPointRecords = () => {
                     itemClass="block px-3 py-2 leading-tight border border-gray-300 cursor-pointer hover:bg-blue-500 hover:text-white"
                     activeClass="z-10 px-3 py-2 leading-tight bg-blue-500 text-white border border-blue-300"
                     activePage={page}
-                    itemsCountPerPage={limit}
+                    itemsCountPerPage={5}
                     totalItemsCount={studentPointRecords.length}
                     pageRangeDisplayed={5}
                     prevPageText={"<"}
