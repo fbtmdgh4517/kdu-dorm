@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { userAuthInfoSelector } from "../state";
 
-const Sidebar = ({ onLogout }) => {
-    const userAuthInfo = useRecoilValue(userAuthInfoSelector);
-
+const Sidebar = ({ onLogout, userAuthInfo }) => {
     return (
         <>
             <aside
@@ -25,14 +21,24 @@ const Sidebar = ({ onLogout }) => {
                                     </button>
                                 </li>
                                 {userAuthInfo.data.isAdmin && (
-                                    <li>
-                                        <Link
-                                            to="/managePoint"
-                                            className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group"
-                                        >
-                                            <span className="ml-3">상벌점 부여</span>
-                                        </Link>
-                                    </li>
+                                    <>
+                                        <li>
+                                            <Link
+                                                to="/managePoint"
+                                                className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group"
+                                            >
+                                                <span className="ml-3">상벌점 부여</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link
+                                                to="/rollCall"
+                                                className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group"
+                                            >
+                                                <span className="ml-3">점호</span>
+                                            </Link>
+                                        </li>
+                                    </>
                                 )}
                             </ul>
                         </div>

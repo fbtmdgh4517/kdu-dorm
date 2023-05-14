@@ -1,13 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-const Header = ({ userName }) => {
-    const onSideBarToggle = () => {
-        document.getElementById('sidebar').classList.toggle('hidden');
-        document.getElementById('toggleSidebarMobile').classList.toggle('bg-gray-100');
-        document.getElementById('toggleSidebarMobileHamburger').classList.toggle('hidden');
-        document.getElementById('toggleSidebarMobileClose').classList.toggle('hidden');
-    };
-
+const Header = ({ userName, onSideBarToggle }) => {
     return (
         <nav className="bg-white border-b border-gray-200 fixed z-30 w-full">
             <div className="px-3 py-5 lg:px-5 lg:pl-3">
