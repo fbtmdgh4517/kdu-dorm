@@ -1,8 +1,11 @@
 const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-
 const db = require("../../db");
+const nodeMailer = require("nodemailer");
+const path = require("path");
+const envPath = path.join(__dirname, "../../.env");
+require("dotenv").config({ path: envPath });
 
 const router = express.Router();
 
@@ -13,6 +16,7 @@ router.post("/signupRequest", (req, res) => {
     const studentContact = req.body.student_contact;
     const studentRoom = req.body.student_room;
     const studentPassword = req.body.student_password;
+    const studentEmail = req.body.student_email;
 
     const sendData = { isSuccess: "" };
 
@@ -22,8 +26,8 @@ router.post("/signupRequest", (req, res) => {
             if (results.length <= 0) {
                 const hashedPassword = bcrypt.hashSync(studentPassword, 10);
                 db.query(
-                    "INSERT INTO signup_requests (student_id, student_name, student_department, student_contact, student_room, student_password) VALUES (?, ?, ?, ?, ?, ?)",
-                    [studentId, studentName, studentDepartment, studentContact, studentRoom, hashedPassword],
+                    "INSERT INTO signup_requests (student_id, student_name, student_department, student_contact, student_email, student_room, student_password) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [studentId, studentName, studentDepartment, studentContact, studentEmail, studentRoom, hashedPassword],
                     (error, results) => {
                         if (error) throw error;
                         sendData.isSuccess = "True";
@@ -39,7 +43,7 @@ router.post("/signupRequest", (req, res) => {
 });
 
 router.get("/signupRequest", (req, res) => {
-    db.query("SELECT * FROM signup_requests", (error, results) => {
+    db.query("SELECT * FROM signup_requests ORDER BY request_id DESC", (error, results) => {
         if (error) throw error;
         console.log(results);
         res.send(results);
@@ -59,12 +63,52 @@ router.put("/signupRequest/accept/:id", (req, res) => {
     const id = req.params.id;
     const updateStatusQuery = 'UPDATE signup_requests SET request_status = "승인" WHERE request_id = ?';
     const insertStudentInfoQuery =
-        "INSERT INTO students (student_id, student_name, student_department, student_contact, student_room, student_password) SELECT student_id, student_name, student_department, student_contact, student_room, student_password FROM signup_requests WHERE request_id = ?";
+        "INSERT INTO students (student_id, student_name, student_department, student_contact, student_email, student_room, student_password) " +
+        "SELECT student_id, student_name, student_department, student_contact, student_email, student_room, student_password " +
+        "FROM signup_requests " +
+        "WHERE request_id = ?";
+    const selectEmailQuery = "SELECT student_email FROM signup_requests WHERE request_id = ?";
+
+    db.query(selectEmailQuery, [id], (error, results) => {
+        if (error) throw error;
+
+        const studentEmail = results[0].student_email;
+
+        const mailPoster = nodeMailer.createTransport({
+            service: "naver",
+            host: "smtp.naver.com",
+            port: 587,
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASSWORD,
+            },
+        });
+
+        const mailData = {
+            from: process.env.MAIL_USER,
+            to: studentEmail,
+            subject: "[경동대학교 외박신청] 회원가입이 승인 되었습니다.",
+            text: "회원가입이 승인 되었습니다.",
+        };
+
+        const sendMail = (mailOption) => {
+            mailPoster.sendMail(mailOption, (err, info) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("Email sent: " + info.response);
+                }
+            });
+        };
+
+        sendMail(mailData);
+    });
 
     db.query(updateStatusQuery, [id], (error, results) => {
         if (error) throw error;
         res.send(results);
     });
+
     db.query(insertStudentInfoQuery, [id], (error, results) => {
         if (error) throw error;
     });
