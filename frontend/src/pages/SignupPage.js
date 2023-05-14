@@ -24,13 +24,14 @@ const SignupPage = () => {
                     student_contact: data.student_contact,
                     student_room: data.student_room,
                     student_password: data.student_password,
+                    student_email: data.student_email,
                 },
                 { withCredentials: true }
             )
             .then((res) => {
                 console.log(res.data.isSuccess);
                 if (res.data.isSuccess === "True") {
-                    setSuccessMessage("회원가입 신청이 완료되었습니다. 관리자의 승인을 기다려주세요.");
+                    setSuccessMessage("회원가입 신청이 완료되었습니다. 관리자의 승인을 기다려주세요. 승인이 완료되면 이메일로 알려드립니다.");
                 }
             })
             .catch((err) => {
@@ -75,7 +76,6 @@ const SignupPage = () => {
                                     ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
                                     : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
                             }
-                            // className="border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
                             placeholder="ex) 홍길동"
                         />
                         {errors.student_name && <span className="text-red-500">{errors.student_name.message}</span>}
@@ -159,6 +159,27 @@ const SignupPage = () => {
                         {errors.student_contact && <span className="text-red-500">{errors.student_contact.message}</span>}
                     </div>
                     <div className="container mx-auto mb-5">
+                        <label htmlFor="student_email" className="font-medium">
+                            이메일
+                        </label>
+                        <input
+                            {...register("student_email", {
+                                required: {
+                                    value: true,
+                                    message: "이메일을 입력하세요",
+                                },
+                            })}
+                            id="student_email"
+                            className={
+                                errors.student_email
+                                    ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                    : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                            }
+                            placeholder="ex) abc123@email.com"
+                        />
+                        {errors.student_email && <span className="text-red-500">{errors.student_email.message}</span>}
+                    </div>
+                    <div className="container mx-auto mb-5">
                         <label htmlFor="student_room" className="font-medium">
                             호실
                         </label>
@@ -221,22 +242,6 @@ const SignupPage = () => {
                         />
                         {errors.student_password && <span className="text-red-500">{errors.student_password.message}</span>}
                     </div>
-                    {/* <div className="container mx-auto mb-5">
-                        <label htmlFor="email" className="font-medium">
-                            이메일
-                        </label>
-                        <input
-                            name="email"
-                            id="email"
-                            className={
-                                errors.name
-                                    ? 'border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2'
-                                    : 'border border-black container mx-auto rounded-xl shadow-md h-10 px-2'
-                            }
-                            type="email"
-                            placeholder="ex) abc1234@kduniv.ac.kr"
-                        />
-                    </div> */}
                     <button className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex">
                         회원가입
                     </button>
