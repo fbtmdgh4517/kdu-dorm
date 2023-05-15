@@ -72,4 +72,14 @@ router.get("/pointRecords", (req, res) => {
     });
 });
 
+// 호실별 학생 목록
+router.get("/list/:room", (req, res) => {
+    const room = req.body.room;
+    const query = "SELECT * FROM students WHERE room = ? ORDER BY student_name";
+    db.query(query, [room], (error, results) => {
+        if (error) throw error;
+        res.send(results);
+    });
+});
+
 module.exports = router;
