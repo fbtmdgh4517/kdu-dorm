@@ -1,6 +1,4 @@
 import { Link, useParams } from "react-router-dom";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
 import HeaderContainer from "../containers/HeaderContainer";
 import SidebarContainer from "../containers/SidebarContainer";
 import { useEffect, useState } from "react";
@@ -10,293 +8,301 @@ import { useRecoilValue } from "recoil";
 import { userAuthInfoSelector } from "../state";
 
 const SinchungCheckPage = () => {
-    //관리자가 체크하는 페이지
-    const { id } = useParams();
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
-    const [applicationInfo, setApplicationInfo] = useState({});
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
-    const [isRefused, setIsRefused] = useState(false);
-    const [isUpdateBtnClicked, setIsUpdateBtnClicked] = useState(false);
-    const userAuthInfo = useRecoilValue(userAuthInfoSelector);
+  //관리자가 체크하는 페이지
+  const { id } = useParams();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [applicationInfo, setApplicationInfo] = useState({});
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [isRefused, setIsRefused] = useState(false);
+  const [isUpdateBtnClicked, setIsUpdateBtnClicked] = useState(false);
+  const userAuthInfo = useRecoilValue(userAuthInfoSelector);
 
-    const fetchData = async () => {
-        // console.log(id);
-        await axios
-            .get(`http://localhost:4000/application/detail/${id}`, { withCredentials: true })
-            .then((res) => {
-                console.log(res.data);
-                setApplicationInfo(res.data[0]);
-                const applicationStartYear = new Date(res.data[0].start_date).getFullYear();
-                const applicationStartMonth = new Date(res.data[0].start_date).getMonth() + 1;
-                const applicationStartDate = new Date(res.data[0].start_date).getDate();
-                const applicationEndYear = new Date(res.data[0].end_date).getFullYear();
-                const applicationEndMonth = new Date(res.data[0].end_date).getMonth() + 1;
-                const applicationEndDate = new Date(res.data[0].end_date).getDate();
-                setStartDate(`${applicationStartYear}-${applicationStartMonth}-${applicationStartDate}`);
-                setEndDate(`${applicationEndYear}-${applicationEndMonth}-${applicationEndDate}`);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
+  const fetchData = async () => {
+    // console.log(id);
+    await axios
+      .get(`http://localhost:4000/application/detail/${id}`, { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        setApplicationInfo(res.data[0]);
+        const applicationStartYear = new Date(res.data[0].start_date).getFullYear();
+        const applicationStartMonth = new Date(res.data[0].start_date).getMonth() + 1;
+        const applicationStartDate = new Date(res.data[0].start_date).getDate();
+        const applicationEndYear = new Date(res.data[0].end_date).getFullYear();
+        const applicationEndMonth = new Date(res.data[0].end_date).getMonth() + 1;
+        const applicationEndDate = new Date(res.data[0].end_date).getDate();
+        setStartDate(`${applicationStartYear}-${applicationStartMonth}-${applicationStartDate}`);
+        setEndDate(`${applicationEndYear}-${applicationEndMonth}-${applicationEndDate}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    useEffect(() => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const toggleUpdateButtonClicked = () => {
+    setIsUpdateBtnClicked(!isUpdateBtnClicked);
+  };
+
+  const onAcceptApplication = async () => {
+    await axios
+      .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
+      .then((res) => {
+        alert("외박 신청 승인이 완료되었습니다.");
         fetchData();
-    }, []);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    const toggleUpdateButtonClicked = () => {
-        setIsUpdateBtnClicked(!isUpdateBtnClicked);
-    };
-
-    const onAcceptApplication = async () => {
-        await axios
-            .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
-            .then((res) => {
-                alert("외박 신청 승인이 완료되었습니다.");
-                fetchData();
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    const onRefuseApplication = async (data) => {
-        await axios
-            .put(
-                `http://localhost:4000/application/refuse/${id}`,
-                {
-                    rejection_reason: data.rejection_reason,
-                },
-                {
-                    withCredentials: true,
-                }
-            )
-            .then((res) => {
-                alert("외박 신청 거부가 완료되었습니다.");
-                fetchData();
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    const onSubmit = async (data) => {
-        const { start_date, end_date, reason } = data;
-        const res = await axios.patch(`http://localhost:4000/application/update/${id}`, { start_date, end_date, reason }, { withCredentials: true });
-        if (res.status === 200) {
-            alert("외박 신청 수정이 완료되었습니다.");
-            setIsUpdateBtnClicked(false);
-            fetchData();
+  const onRefuseApplication = async (data) => {
+    await axios
+      .put(
+        `http://localhost:4000/application/refuse/${id}`,
+        {
+          rejection_reason: data.rejection_reason,
+        },
+        {
+          withCredentials: true,
         }
-    };
+      )
+      .then((res) => {
+        alert("외박 신청 거부가 완료되었습니다.");
+        fetchData();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    const onDeleteApplication = async () => {
-        if (confirm("정말 삭제하시겠습니까?") === true) {
-            const res = await axios.delete(`http://localhost:4000/application/delete/${id}`, { withCredentials: true });
-            if (res.status === 200) {
-                alert("외박 신청 삭제가 완료되었습니다.");
-                window.location.href = "/main";
-            }
-        } else {
-            return;
-        }
-    };
+  const onSubmit = async (data) => {
+    const { start_date, end_date, reason } = data;
+    const res = await axios.patch(`http://localhost:4000/application/update/${id}`, { start_date, end_date, reason }, { withCredentials: true });
+    if (res.status === 200) {
+      alert("외박 신청 수정이 완료되었습니다.");
+      setIsUpdateBtnClicked(false);
+      fetchData();
+    }
+  };
 
-    return (
-        <>
-            <HeaderContainer></HeaderContainer>
-            <div className="flex overflow-hidden bg-white pt-16">
-                <SidebarContainer></SidebarContainer>
-                <div id="main-content" className="h-full w-full bg-gray-100 relative overflow-y-auto lg:ml-64">
-                    <main>
-                        <div className="py-6 px-4">
-                            <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
-                                    {/* 카드 */}
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold leading-none text-gray-900">외박신청</h1>
-                                    </div>
-                                    {isUpdateBtnClicked ? (
-                                        <>
-                                            <form onSubmit={handleSubmit(onSubmit)}>
-                                                <div className="container mx-auto mb-5">
-                                                    <label htmlFor="start_date" className="font-medium">
-                                                        외박 시작일
-                                                    </label>
-                                                    <input
-                                                        {...register("start_date", {
-                                                            required: { value: true, message: "외박 시작일을 입력하세요" },
-                                                        })}
-                                                        id="start_date"
-                                                        className={
-                                                            errors.start_date
-                                                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                        }
-                                                        type="date"
-                                                        min={new Date().toISOString().split("T")[0]}
-                                                    />
-                                                    {errors.start_date && <span className="text-red-500">{errors.start_date.message}</span>}
-                                                </div>
-                                                <div className="container mx-auto mb-5">
-                                                    <label htmlFor="end_date" className="font-medium">
-                                                        외박 종료일
-                                                    </label>
-                                                    <input
-                                                        {...register("end_date", {
-                                                            required: { value: true, message: "외박 종료일을 입력하세요" },
-                                                        })}
-                                                        id="end_date"
-                                                        className={
-                                                            errors.end_date
-                                                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                        }
-                                                        type="date"
-                                                        min={new Date().toISOString().split("T")[0]}
-                                                    />
-                                                    {errors.end_date && <span className="text-red-500">{errors.end_date.message}</span>}
-                                                </div>
-                                                <div className="container mx-auto mb-5">
-                                                    <label htmlFor="reason" className="font-medium">
-                                                        외박 사유
-                                                    </label>
-                                                    <input
-                                                        {...register("reason", {
-                                                            required: { value: true, message: "외박 사유를 입력하세요" },
-                                                        })}
-                                                        id="reason"
-                                                        className={
-                                                            errors.reason
-                                                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                        }
-                                                        type="text"
-                                                    />
-                                                    {errors.reason && <span className="text-red-500">{errors.reason.message}</span>}
-                                                </div>
-                                                <div className="flex justify-between  md:mx-40 my-5">
-                                                    <button
-                                                        type="submit"
-                                                        className="shadow-md h-9 w-20 bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
-                                                    >
-                                                        수정
-                                                    </button>
-                                                    <button
-                                                        onClick={toggleUpdateButtonClicked}
-                                                        className="shadow-md h-9 w-20 bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
-                                                    >
-                                                        취소
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="container mx-auto mb-5">
-                                                <h1 className="font-medium">외박 시작일</h1>
-                                                <span>{startDate}</span>
-                                            </div>
-                                            <div className="container mx-auto mb-5">
-                                                <h1 className="font-medium">외박 종료일</h1>
-                                                <span>{endDate}</span>
-                                            </div>
-                                            <div className="container mx-auto mb-5">
-                                                <h1 className="font-medium">외박 사유</h1>
-                                                <span>{applicationInfo.application_reason}</span>
-                                            </div>
-                                        </>
-                                    )}
-                                    {!userAuthInfo.data.isAdmin && !isUpdateBtnClicked && applicationInfo.approval_status === "미확인" && (
-                                        <div className="flex justify-between  md:mx-40 my-5">
-                                            <button
-                                                onClick={toggleUpdateButtonClicked}
-                                                className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
-                                            >
-                                                수정
-                                            </button>
-                                            <button
-                                                onClick={onDeleteApplication}
-                                                className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
-                                            >
-                                                삭제
-                                            </button>
-                                        </div>
-                                    )}
-                                    {userAuthInfo.data.isAdmin && applicationInfo.approval_status === "미확인" && (
-                                        <div className="flex justify-between  md:mx-40 my-5">
-                                            <button
-                                                onClick={onAcceptApplication}
-                                                className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
-                                            >
-                                                수락
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setIsRefused(!isRefused);
-                                                }}
-                                                className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
-                                            >
-                                                거절
-                                            </button>
-                                        </div>
-                                    )}
-                                    {userAuthInfo.data.isAdmin && isRefused && (
-                                        <form method="put" onSubmit={handleSubmit(onRefuseApplication)}>
-                                            <input
-                                                {...register("rejection_reason", {
-                                                    required: {
-                                                        value: true,
-                                                        message: "거부 사유를 입력하세요",
-                                                    },
-                                                })}
-                                                id="rejection_reason"
-                                                className={
-                                                    errors.rejection_reason
-                                                        ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                        : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                }
-                                                // className="border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
-                                                placeholder="거부 사유를 입력하세요"
-                                            />
-                                            {errors.rejection_reason && <span className="text-red-500">{errors.rejection_reason.message}</span>}
-                                            <div className="flex justify-between  md:mx-40 my-5">
-                                                <button
-                                                    type="submit"
-                                                    className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
-                                                >
-                                                    제출
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        setIsRefused(!isRefused);
-                                                    }}
-                                                    className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
-                                                >
-                                                    취소
-                                                </button>
-                                            </div>
-                                        </form>
-                                    )}
-                                    {applicationInfo.approval_status === "승인" && (
-                                        <div className="text-center text-green-600 font-medium text-lg mt-4">승인된 외박신청입니다.</div>
-                                    )}
-                                    {applicationInfo.approval_status === "거부" && (
-                                        <div className="text-center text-red-600 font-medium text-lg mt-4">거부된 외박신청입니다.</div>
-                                    )}
-                                </div>
-                            </div>
+  const onDeleteApplication = async () => {
+    if (confirm("정말 삭제하시겠습니까?") === true) {
+      const res = await axios.delete(`http://localhost:4000/application/delete/${id}`, { withCredentials: true });
+      if (res.status === 200) {
+        alert("외박 신청 삭제가 완료되었습니다.");
+        window.location.href = "/main";
+      }
+    } else {
+      return;
+    }
+  };
+
+  return (
+    <>
+      <HeaderContainer></HeaderContainer>
+      <div className="flex overflow-hidden bg-white pt-16">
+        <SidebarContainer></SidebarContainer>
+        <div id="main-content" className="h-full w-full bg-gray-100 relative overflow-y-auto lg:ml-64">
+          <main>
+            <div className="py-6 px-4">
+              <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4">
+                <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
+                  {/* 카드 */}
+                  <div className="flex items-center justify-between mb-4">
+                    <h1 className="text-xl font-bold leading-none text-gray-900">외박신청</h1>
+                  </div>
+                  {/* 수정 버튼을 눌렀을 경우 외박 사유 입력 폼, 수정 취소 버튼 출력 */}
+                  {isUpdateBtnClicked ? (
+                    <>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="container mx-auto mb-5">
+                          <label htmlFor="start_date" className="font-medium">
+                            외박 시작일
+                          </label>
+                          <input
+                            {...register("start_date", {
+                              required: { value: true, message: "외박 시작일을 입력하세요" },
+                            })}
+                            id="start_date"
+                            className={
+                              errors.start_date
+                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                            }
+                            type="date"
+                            min={new Date().toISOString().split("T")[0]}
+                          />
+                          {errors.start_date && <span className="text-red-500">{errors.start_date.message}</span>}
                         </div>
-                    </main>
+                        <div className="container mx-auto mb-5">
+                          <label htmlFor="end_date" className="font-medium">
+                            외박 종료일
+                          </label>
+                          <input
+                            {...register("end_date", {
+                              required: { value: true, message: "외박 종료일을 입력하세요" },
+                            })}
+                            id="end_date"
+                            className={
+                              errors.end_date
+                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                            }
+                            type="date"
+                            min={new Date().toISOString().split("T")[0]}
+                          />
+                          {errors.end_date && <span className="text-red-500">{errors.end_date.message}</span>}
+                        </div>
+                        <div className="container mx-auto mb-5">
+                          <label htmlFor="reason" className="font-medium">
+                            외박 사유
+                          </label>
+                          <input
+                            {...register("reason", {
+                              required: { value: true, message: "외박 사유를 입력하세요" },
+                            })}
+                            id="reason"
+                            className={
+                              errors.reason
+                                ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                                : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                            }
+                            type="text"
+                          />
+                          {errors.reason && <span className="text-red-500">{errors.reason.message}</span>}
+                        </div>
+                        <div className="flex justify-between  md:mx-40 my-5">
+                          <button
+                            type="submit"
+                            className="shadow-md h-9 w-20 bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+                          >
+                            수정
+                          </button>
+                          <button
+                            onClick={toggleUpdateButtonClicked}
+                            className="shadow-md h-9 w-20 bg-red-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-red-700 transition ease-in-out hover:scale-110"
+                          >
+                            취소
+                          </button>
+                        </div>
+                      </form>
+                    </>
+                  ) : (
+                    // 수정 버튼을 누르지 않았을 경우
+                    <>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-medium">외박 시작일</h1>
+                        <span>{startDate}</span>
+                      </div>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-medium">외박 종료일</h1>
+                        <span>{endDate}</span>
+                      </div>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-medium">외박 사유</h1>
+                        <span>{applicationInfo.application_reason}</span>
+                      </div>
+                    </>
+                  )}
+                  {/* 학생 계정이고 수정 버튼을 누르지 않고 외박신청의 상태가 미확인일 경우 수정, 삭제 버튼 출력 */}
+                  {!userAuthInfo.data.isAdmin && !isUpdateBtnClicked && applicationInfo.approval_status === "미확인" && (
+                    <div className="flex justify-between  md:mx-40 my-5">
+                      <button
+                        onClick={toggleUpdateButtonClicked}
+                        className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                      >
+                        수정
+                      </button>
+                      <button
+                        onClick={onDeleteApplication}
+                        className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                  {/* 관리자 계정이고 외박신청의 상태가 미확인일 경우 수락, 거절 버튼 출력 */}
+                  {userAuthInfo.data.isAdmin && applicationInfo.approval_status === "미확인" && (
+                    <div className="flex justify-between  md:mx-40 my-5">
+                      <button
+                        onClick={onAcceptApplication}
+                        className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                      >
+                        수락
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsRefused(!isRefused);
+                        }}
+                        className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                      >
+                        거절
+                      </button>
+                    </div>
+                  )}
+                  {/* 관리자 계정이고 거절 버튼을 눌렀을 경우 거부 사유 입력 폼, 제출 취소 버튼 출력 */}
+                  {userAuthInfo.data.isAdmin && isRefused && (
+                    <form method="put" onSubmit={handleSubmit(onRefuseApplication)}>
+                      <input
+                        {...register("rejection_reason", {
+                          required: {
+                            value: true,
+                            message: "거부 사유를 입력하세요",
+                          },
+                        })}
+                        id="rejection_reason"
+                        className={
+                          errors.rejection_reason
+                            ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                            : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                        }
+                        // className="border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+                        placeholder="거부 사유를 입력하세요"
+                      />
+                      {errors.rejection_reason && <span className="text-red-500">{errors.rejection_reason.message}</span>}
+                      <div className="flex justify-between  md:mx-40 my-5">
+                        <button
+                          type="submit"
+                          className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                        >
+                          제출
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsRefused(!isRefused);
+                          }}
+                          className="shadow-md rounded-3xl h-[35px] w-[85px] bg-red-500 items-center justify-center self-center text-base font-medium text-white hover:bg-red-700 mx-auto transition ease-in-out hover:scale-110 flex"
+                        >
+                          취소
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                  {/* 외박신청의 상태가 승인일 경우 */}
+                  {applicationInfo.approval_status === "승인" && <p className="text-center text-green-600 font-medium text-lg mt-4">승인된 외박신청입니다.</p>}
+                  {/* 외박신청의 상태가 거부일 경우 */}
+                  {applicationInfo.approval_status === "거부" && (
+                    <>
+                      <p className="text-center text-red-600 font-medium text-lg mt-4">거부된 외박신청입니다.</p>
+                      <p className="text-center text-red-600 font-medium text-lg mt-4">거부 사유: {applicationInfo.rejection_reason}</p>
+                    </>
+                  )}
                 </div>
+              </div>
             </div>
-        </>
-    );
+          </main>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default SinchungCheckPage;
