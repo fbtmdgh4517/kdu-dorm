@@ -12,11 +12,11 @@ const weekDietRouter = require("./routes/weekDiet");
 const authRouter = require("./routes/auth");
 const applicationRouter = require("./routes/application");
 const studentsRouter = require("./routes/students");
+const rollCallRouter = require("./routes/rollCall");
 
 const envPath = path.join(__dirname, "../.env");
 require("dotenv").config({ path: envPath });
-const { COOKIE_SECRET, PORT, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } =
-    process.env;
+const { COOKIE_SECRET, PORT, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const options = {
     host: DB_HOST,
@@ -74,6 +74,7 @@ app.use("/weekDiet", weekDietRouter);
 app.use("/auth", authRouter);
 app.use("/application", applicationRouter);
 app.use("/students", studentsRouter);
+app.use("/rollCall", rollCallRouter);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../../frontend/build/index.html"));
