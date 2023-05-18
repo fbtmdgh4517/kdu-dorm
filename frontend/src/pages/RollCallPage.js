@@ -9,31 +9,55 @@ import { studentListSelector } from "../state";
 const RollCallPage = () => {
   const [todayDate, setTodayDate] = useState({});
   const [selectedOption, setSelectedOption] = useState("미완료");
-  const [options, setOptions] = useState(["미완료", "완료", "무단외박"]);
   const [rollCallList, setRollCallList] = useState([]);
+  const [todayOutStudentList, setTodayOutStudentList] = useState([]);
+  const [roomList, setRoomList] = useState({});
   const [selectClassName, setSelectClassName] = useState(
     "shadow-md rounded-3xl h-[40px] w-[90px] bg-gray-500 items-center text-base font-medium text-white text-center"
   );
   const studentList = useRecoilValueLoadable(studentListSelector);
-  const [roomList, setRoomList] = useState({});
-  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const year = new Date().getFullYear();
-  const month = new Date().getMonth() + 1;
-  const date = new Date().getDate();
-  const day = dayOfWeek[new Date().getDay()];
+
+  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const date = today.getDate();
+  const day = dayOfWeek[today.getDay()];
 
   const fetchRollCallList = async () => {
     try {
       const res = await axios.get(`http://localhost:4000/rollCall/rollCallList/${year}-${month}-${date}`, {
         withCredentials: true,
       });
+      console.log("점호 목록");
       console.log(res.data);
       setRollCallList(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchTodayOutStudentList = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/students/todayOutStudentList", { withCredentials: true });
+      console.log("외박 학생 목록");
+      console.log(res.data);
+      //res.data 배열에 있는 값들을 object로 변환
+      // const todayOutStudentList2 = res.data.reduce((acc, cur) => {
+      //   acc[cur.student_id] = cur;
+      //   return acc;
+      // }, {});
+      setTodayOutStudentList(
+        res.data.reduce((acc, cur) => {
+          acc[cur.student_id] = cur;
+          return acc;
+        }, {})
+      );
     } catch (error) {
       console.log(error);
     }
@@ -42,6 +66,7 @@ const RollCallPage = () => {
   useEffect(() => {
     setTodayDate({ year, month, date, day });
     fetchRollCallList();
+    fetchTodayOutStudentList();
   }, []);
 
   useEffect(() => {
@@ -73,13 +98,13 @@ const RollCallPage = () => {
 
   const onSubmit = async (data) => {
     try {
+      console.log(data);
       for (let key in data) {
         if (data[key] === "미완료") {
           alert("미완료 학생이 있습니다. 확인 후 다시 시도해주세요.");
           return;
         }
       }
-      console.log(data);
       console.log(Object.keys(data)[0]);
       console.log(Object.values(data));
       const res = await axios.post(
@@ -94,6 +119,7 @@ const RollCallPage = () => {
         }
       );
       alert("점호가 완료되었습니다.");
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -104,9 +130,9 @@ const RollCallPage = () => {
       <HeaderContainer></HeaderContainer>
       <div className="flex overflow-hidden bg-white pt-16">
         <SidebarContainer></SidebarContainer>
-        <div id="main-content" className="h-full w-full bg-gray-100 relative overflow-y-auto lg:ml-64">
+        <div id="main-content" className="h-full w-full bg-blue-100 relative overflow-y-auto lg:ml-64">
           <main>
-            <div className="py-6 px-4">
+            <div className="py-10 px-4">
               <div className="w-full grid grid-cols-1 xl:grid-cols-1 gap-4">
                 <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                   {/* 카드 */}
@@ -132,7 +158,9 @@ const RollCallPage = () => {
                                     {
                                       /* student.student_id의 값이랑 rollCallList.student_id의 값이 같은 rollCallList를 찾고 해당 student_id에 해당하는 값을 가진 학생의 is_checked 값을 가져오는 코드 */
                                       // console.log(rollCallList.find((rollCall) => rollCall.student_id === student.student_id).is_checked)
-                                      rollCallList.length === 0 ? (
+
+                                      // 점호 안했으면 rollCallList의 길이는 0, 점호를 안했고 해당 학생이 오늘 외박신청한 학생 목록에 없으면 아래 select 태그를 보여줌
+                                      rollCallList.length === 0 && !todayOutStudentList[student.student_id] ? (
                                         <select
                                           {...register(`${student.student_id.toString()}`, {
                                             required: {
@@ -148,7 +176,8 @@ const RollCallPage = () => {
                                           <option value="완료">완료</option>
                                           <option value="무단외박">무단외박</option>
                                         </select>
-                                      ) : (
+                                      ) : // 점호 했고 해당 학생이 오늘 외박신청한 학생 목록에 없으면 아래 select 태그를 보여줌
+                                      rollCallList.length > 0 && !todayOutStudentList[student.student_id] ? (
                                         <select
                                           {...register(`${student.student_id.toString()}`, {
                                             required: {
@@ -172,6 +201,56 @@ const RollCallPage = () => {
                                           <option value="완료">완료</option>
                                           <option value="무단외박">무단외박</option>
                                         </select>
+                                      ) : // 점호를 안했고 해당 학생이 오늘 외박신청한 학생 목록에 있고 오늘 날짜가 외박 시작날짜, 외박 종료날짜 사이이면 아래를 보여줌
+                                      rollCallList.length === 0 &&
+                                        todayOutStudentList[student.student_id] &&
+                                        new Date(todayOutStudentList[student.student_id].start_date) <
+                                          today <
+                                          new Date(todayOutStudentList[student.student_id].end_date) ? (
+                                        <input
+                                          {...register(`${student.student_id.toString()}`, {
+                                            required: {
+                                              value: true,
+                                              message: "필수 항목입니다.",
+                                            },
+                                          })}
+                                          id={student.student_id}
+                                          className="shadow-md rounded-3xl h-[40px] w-[90px] bg-green-600 items-center text-base font-medium text-white text-center"
+                                          value="외박"
+                                          readOnly
+                                        />
+                                      ) : (
+                                        // 점호를 했고 해당 학생이 오늘 외박신청한 학생 목록에 있고 오늘 날짜가 외박 시작날짜, 외박 종료날짜 사이면 아래를 보여줌
+                                        rollCallList.length > 0 &&
+                                        todayOutStudentList[student.student_id] &&
+                                        new Date(todayOutStudentList[student.student_id].start_date) <
+                                          today <
+                                          new Date(todayOutStudentList[student.student_id].end_date) && (
+                                          <select
+                                            {...register(`${student.student_id.toString()}`, {
+                                              required: {
+                                                value: true,
+                                                message: "필수 항목입니다.",
+                                              },
+                                            })}
+                                            id={student.student_id}
+                                            className={
+                                              rollCallList.find((rollCall) => rollCall.student_id === student.student_id).is_checked === "완료"
+                                                ? "shadow-md rounded-3xl h-[40px] w-[90px] bg-blue-500 items-center text-base font-medium text-white text-center"
+                                                : rollCallList.find((rollCall) => rollCall.student_id === student.student_id).is_checked === "무단외박"
+                                                ? "shadow-md rounded-3xl h-[40px] w-[90px] bg-red-500 items-center text-base font-medium text-white text-center"
+                                                : "shadow-md rounded-3xl h-[40px] w-[90px] bg-green-600 items-center text-base font-medium text-white text-center"
+                                            }
+                                            disabled
+                                          >
+                                            <option value="외박" selected>
+                                              외박
+                                            </option>
+                                            <option value="미완료">미완료</option>
+                                            <option value="완료">완료</option>
+                                            <option value="무단외박">무단외박</option>
+                                          </select>
+                                        )
                                       )
                                     }
                                   </div>
