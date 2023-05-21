@@ -14,50 +14,39 @@ const NoticeListPreview = ({ notice, page, pageChangeHandler, offset }) => {
                 <th className="p-2 whitespace-nowrap">
                   <div className="font-semibold ">제목</div>
                 </th>
-                <th className="p-2 whitespace-nowrap">
+                {/* <th className="p-2 whitespace-nowrap">
                   <div className="font-semibold ">작성자</div>
-                </th>
+                </th> */}
                 <th className="p-2 whitespace-nowrap">
                   <div className="font-semibold ">작성일</div>
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 pl-2">
+            <tbody className="divide-y divide-gray-100">
               {notice &&
-                notice.slice(offset, offset + 8).map((su) => {
+                notice.slice(offset, offset + 7).map((su) => {
                   return (
-                    <div key={su.seq} className="">
-                      <a
-                        href={`https://metrodorm.kduniv.ac.kr/bbs/getBbsWriteView.kmc?seq=${su.seq}&bbs_locgbn=KY&bbs_id=notice`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {su.subject}
-                      </a>
-                    </div>
+                    <tr key={su.seq} className="">
+                      <td className="whitespace-nowrap hover:text-blue-600 pl-2 py-1">
+                        <a
+                          href={`https://metrodorm.kduniv.ac.kr/bbs/getBbsWriteView.kmc?seq=${su.seq}&bbs_locgbn=KY&bbs_id=notice`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {su.subject}
+                        </a>
+                      </td>
+                      {/* <td className="whitespace-nowrap text-center">{su.regname}</td> */}
+                      <td className="whitespace-nowrap text-center">{su.regdate}</td>
+                    </tr>
                   );
                 })}
             </tbody>
           </table>
         </div>
       </div>
-      {/* {notice &&
-                notice.slice(offset, offset + 8).map((su) => {
-                    return (
-                        <div key={su.seq}>
-                            <a
-                                href={`https://metrodorm.kduniv.ac.kr/bbs/getBbsWriteView.kmc?seq=${su.seq}&bbs_locgbn=KY&bbs_id=notice`}
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                {su.subject}
-                            </a>
-                            <br></br>
-                        </div>
-                    );
-                })} */}
       {notice && (
-        <div className="mx-auto items-center flex justify-center mt-6">
+        <div className="mx-auto items-center flex justify-center mt-3">
           <Pagination
             innerClass="inline-flex items-center -space-x-px"
             itemClassFirst="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700"
