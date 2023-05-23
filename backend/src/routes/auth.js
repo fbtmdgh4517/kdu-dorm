@@ -17,10 +17,12 @@ router.post("/signupRequest", (req, res) => {
   const studentPassword = req.body.student_password;
   const studentEmail = req.body.student_email;
 
+  const query = "SELECT * FROM students where student_id = ?";
+
   const sendData = { isSuccess: "" };
 
   if (studentName && studentId && studentDepartment && studentContact && studentRoom && studentPassword) {
-    db.query("SELECT * FROM students where student_id = ?", [studentId], (error, results) => {
+    db.query(query, [studentId], (error, results) => {
       if (error) throw error;
       if (results.length <= 0) {
         const hashedPassword = bcrypt.hashSync(studentPassword, 10);
@@ -42,17 +44,20 @@ router.post("/signupRequest", (req, res) => {
 });
 
 router.get("/signupRequest", (req, res) => {
-  db.query("SELECT * FROM signup_requests ORDER BY request_id DESC", (error, results) => {
+  const adminFloor = req.session.admin_floor;
+  const query = `SELECT * FROM signup_requests WHERE student_room LIKE '${adminFloor}%' ORDER BY request_id DESC`;
+  db.query(query, (error, results) => {
     if (error) throw error;
-    console.log(results);
+    // console.log(results);
     res.send(results);
   });
 });
 
 router.get("/signupRequest/:id", (req, res) => {
-  db.query("SELECT * FROM signup_requests WHERE request_id = ?", [req.params.id], (error, results) => {
+  const query = "SELECT * FROM signup_requests WHERE request_id = ?";
+  db.query(query, [req.params.id], (error, results) => {
     if (error) throw error;
-    console.log(results);
+    // console.log(results);
     res.send(results);
   });
 });
@@ -60,7 +65,7 @@ router.get("/signupRequest/:id", (req, res) => {
 router.put("/signupRequest/accept/:id", (req, res) => {
   console.log("회원가입 승인");
   const id = req.params.id;
-  const updateStatusQuery = 'UPDATE signup_requests SET request_status = "승인" WHERE request_id = ?';
+  const updateStatusQuery = "UPDATE signup_requests SET request_status = '승인' WHERE request_id = ?";
   const insertStudentInfoQuery =
     "INSERT INTO students (student_id, student_name, student_department, student_contact, student_email, student_room, student_password) " +
     "SELECT student_id, student_name, student_department, student_contact, student_email, student_room, student_password " +
@@ -117,7 +122,7 @@ router.put("/signupRequest/reject/:id", (req, res) => {
   console.log("회원가입 거절");
   const id = req.params.id;
   const rejectionReason = req.body.rejection_reason;
-  const sqlQuery = 'UPDATE signup_requests SET request_status = "거절", rejection_reason = ? WHERE request_id = ?';
+  const sqlQuery = "UPDATE signup_requests SET request_status = '거부', rejection_reason = ? WHERE request_id = ?";
 
   const selectEmailQuery = "SELECT student_email FROM signup_requests WHERE request_id = ?";
 
@@ -171,10 +176,13 @@ router.post("/login", (req, res) => {
     studentName: "",
     sessionID: "",
     isAdmin: "",
+    adminFloor: "",
   };
 
+  const query = "SELECT * FROM students where student_id = ?";
+
   if (id && studentPassword) {
-    db.query("SELECT * FROM students where student_id = ?", [id], (error, results) => {
+    db.query(query, [id], (error, results) => {
       if (error) throw error;
       if (results.length > 0) {
         bcrypt.compare(studentPassword, results[0].student_password, (err, result) => {
@@ -200,7 +208,7 @@ router.post("/login", (req, res) => {
       } else if (results.length <= 0) {
         console.log("관리자");
         db.query("SELECT * FROM administrators where admin_id = ?", [id], (error, results) => {
-          console.log(results);
+          // console.log(results);
           if (error) throw error;
           if (results.length > 0) {
             bcrypt.compare(studentPassword, results[0].admin_password, (err, result) => {
@@ -214,6 +222,7 @@ router.post("/login", (req, res) => {
                   sendData.isLogin = "True";
                   sendData.sessionID = req.sessionID;
                   sendData.isAdmin = "True";
+                  sendData.adminFloor = results[0].admin_floor;
                   res.send(sendData);
                   console.log("관리자 로그인 성공");
                 });
