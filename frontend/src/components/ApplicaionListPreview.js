@@ -29,7 +29,7 @@ const ApplicationListPreview = ({ applicationInfo, page, pageChangeHandler, offs
                   <tr key={application.application_id} className="max-w-md container mx-auto mb-4">
                     <td className="whitespace-nowrap hover:text-blue-600 pl-2 py-1">
                       <Link to={`/sinchungCheck/${application.application_id}`}>
-                        <span>{`${application.student_name}의 ${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}</span>
+                        <span>{`${application.student_name} (${application.student_room}호)의 ${applicationYear}년 ${applicationMonth}월 ${applicationDate}일 외박 신청`}</span>
                       </Link>
                     </td>
                     <td className="whitespace-nowrap hover:text-blue-600 text-center">
