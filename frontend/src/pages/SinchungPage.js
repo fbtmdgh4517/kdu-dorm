@@ -48,9 +48,9 @@ const SinchungPage = () => {
       <HeaderContainer></HeaderContainer>
       <div className="flex overflow-hidden bg-white pt-16">
         <SidebarContainer></SidebarContainer>
-        <div id="main-content" className="h-full w-full bg-blue-100 relative overflow-y-auto lg:ml-64 pt-3">
+        <div id="main-content" className="h-full w-full bg-blue-200 relative overflow-y-auto lg:ml-64 pt-3">
           <main>
-            <div className="py-6 px-4">
+            <div className="py-9 px-4">
               <div className="w-full gap-4">
                 <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                   {/* 카드 */}

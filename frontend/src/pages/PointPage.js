@@ -90,11 +90,11 @@ const PointPage = () => {
   return (
     <>
       <HeaderContainer></HeaderContainer>
-      <div className="flex bg-white pt-16">
+      <div className="flex pt-16">
         <SidebarContainer></SidebarContainer>
-        <div id="main-content" className="h-full w-full bg-blue-100 relative lg:ml-64">
+        <div id="main-content" className="h-full w-full bg-blue-200 relative lg:ml-56">
           <main>
-            <div className="py-10 px-4">
+            <div className="py-9 px-4">
               <div className="w-full gap-4">
                 <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8">
                   {/* 카드 */}
