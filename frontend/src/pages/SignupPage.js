@@ -32,6 +32,8 @@ const SignupPage = () => {
         console.log(res.data.isSuccess);
         if (res.data.isSuccess === "True") {
           setSuccessMessage("회원가입 신청이 완료되었습니다. 관리자의 승인을 기다려주세요. 승인이나 거절이 완료되면 이메일로 알려드립니다.");
+          alert("회원가입 신청이 완료되었습니다. 관리자의 승인을 기다려주세요. 승인이나 거절이 완료되면 이메일로 알려드립니다.");
+          window.location.href = "/";
         }
       })
       .catch((err) => {
