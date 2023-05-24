@@ -12,28 +12,30 @@ import SignupCheckPage from "./pages/SignUpCheckPage";
 import { RecoilRoot } from "recoil";
 import PointPage from "./pages/PointPage";
 import RollCallPage from "./pages/RollCallPage";
+import StatisticsPage from "./pages/StatisticsPage";
 
 function App() {
-    return (
-        <RecoilRoot>
-            <Helmet>
-                <title>경동대학교 메트로폴캠퍼스 기숙사</title>
-            </Helmet>
-            <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/main" element={<MainPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/userMain" element={<UserPage />} />
-                <Route path="/sinchung" element={<SinchungPage />} />
-                <Route path="/managerMain" element={<AdminPage />} />
-                <Route path="/sinchungCheck/:id" element={<SinchungCheckPage />} />
-                <Route path="/signupRequestCheck/:id" element={<SignupCheckPage />} />
-                <Route path="/notice" element={<NoticePage />} />
-                <Route path="/managePoint" element={<PointPage />} />
-                <Route path="/rollCall" element={<RollCallPage />} />
-            </Routes>
-        </RecoilRoot>
-    );
+  return (
+    <RecoilRoot>
+      <Helmet>
+        <title>경동대학교 메트로폴캠퍼스 기숙사</title>
+      </Helmet>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/main" element={<MainPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/userMain" element={<UserPage />} />
+        <Route path="/sinchung" element={<SinchungPage />} />
+        <Route path="/managerMain" element={<AdminPage />} />
+        <Route path="/sinchungCheck/:id" element={<SinchungCheckPage />} />
+        <Route path="/signupRequestCheck/:id" element={<SignupCheckPage />} />
+        <Route path="/notice" element={<NoticePage />} />
+        <Route path="/managePoint" element={<PointPage />} />
+        <Route path="/rollCall" element={<RollCallPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
+      </Routes>
+    </RecoilRoot>
+  );
 }
 
 export default App;
