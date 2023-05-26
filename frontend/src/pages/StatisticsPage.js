@@ -4,33 +4,87 @@ import SidebarContainer from "../containers/SidebarContainer";
 import axios from "axios";
 import TodayRollCallStatisticsChart from "../components/TodayRollCallStatisticsChart";
 import TodayApplicationStatisticsChart from "../components/TodayApplicationStatisticsChart";
+import TodayPointStatisticsChart from "../components/TodayPointStatisticsChart";
+import TodayRollCallCompareChart from "../components/TodayRollCallCompareChart";
+import TodayApplicationCompareChart from "../components/TodayApplicationCompareChart";
+import RollCallStatisticsChart from "../components/RollCallStatisticsChart";
+import ApplicationStatisticsChart from "../components/ApplicationStatisticsChart";
+import PointStatisticsChart from "../components/PointStatisticsChart";
+import WeeklyRollCallCompareChart from "../components/WeeklyRollCallCompareChart";
+import WeeklyApplicationCompareChart from "../components/WeeklyApplicationCompareChart";
 
 const StatisticsPage = () => {
   const [todayStatistics, setTodayStatistics] = useState();
   const [todayApplicationStatistics, setTodayApplicationStatistics] = useState([]);
   const [todayRollCallStatistics, setTodayRollCallStatistics] = useState([]);
+  const [todayPointStatistics, setTodayPointStatistics] = useState([]);
+
+  const [rollcallCompareStatistics, setRollCallCompareStatistics] = useState([]);
+  const [applicationCompareStatistics, setApplicationCompareStatistics] = useState([]);
+
+  const [rollCallStatistics, setRollCallStatistics] = useState([]);
+  const [applicationStatistics, setApplicationStatistics] = useState([]);
+  const [pointStatistics, setPointStatistics] = useState([]);
+
+  const [compareDay, setCompareDay] = useState(1);
   const [selectedOption, setSelectedOption] = useState("일간");
+
+  const fetchTodayStatistics = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/statistics/todayStatistics", { withCredentials: true });
+      setTodayStatistics(res.data);
+      setTodayApplicationStatistics(res.data.slice(1, 3));
+      setTodayRollCallStatistics(res.data.slice(3, 6));
+      setTodayPointStatistics(res.data.slice(6, 8));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchCompareStatistics = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4000/statistics/compareStatistics/${compareDay}`, { withCredentials: true });
+      console.log(res.data.rollCallCompareStatistics);
+      console.log(res.data.applicationCompareStatistics);
+      setRollCallCompareStatistics(res.data.rollCallCompareStatistics);
+      setApplicationCompareStatistics(res.data.applicationCompareStatistics);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const fetchStatistics = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/statistics/todayStatistics", { withCredentials: true });
-      console.log(res.data.slice(3, 6).map((data) => data.id));
-      console.log(res.data.slice(3, 6));
-      setTodayStatistics(res.data);
-      // res.data의 0, 1, 2번째 인덱스에 있는 데이터를 todayApplicationStatistics에 저장
-      setTodayApplicationStatistics(res.data.slice(1, 3));
-      setTodayRollCallStatistics(res.data.slice(3, 6));
+      const res = await axios.get(`http://localhost:4000/statistics/statistics/${compareDay}`, { withCredentials: true });
+      console.log(res.data);
+      console.log(Object.keys(res.data.rollCallStatistics));
+      setRollCallStatistics(res.data.rollCallStatistics);
+      setApplicationStatistics(res.data.applicationStatistics);
+      setPointStatistics(res.data.pointStatistics);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    fetchStatistics();
+    fetchTodayStatistics();
+    fetchCompareStatistics();
   }, []);
+
+  useEffect(() => {
+    fetchStatistics();
+    fetchCompareStatistics();
+  }, [compareDay]);
 
   const onOptionChange = (e) => {
     setSelectedOption(e.target.value);
+    if (e.target.value === "일간") {
+      setCompareDay(1);
+    } else if (e.target.value === "주간") {
+      setCompareDay(7);
+    } else if (e.target.value === "월간") {
+      setCompareDay(30);
+    }
   };
 
   return (
@@ -52,31 +106,210 @@ const StatisticsPage = () => {
                       className="shadow-md rounded-3xl h-[40px] w-32 bg-black items-center text-base font-medium text-white text-center mb-4"
                       onChange={onOptionChange}
                     >
+                      {/* <option value="">통계 종류 선택</option> */}
                       <option value="일간">일간 통계</option>
                       <option value="주간">주간 통계</option>
                       <option value="월간">월간 통계</option>
-                      <option value="날짜 직접 입력">날짜 직접 입력</option>
                     </select>
                   </div>
-                  {selectedOption === "일간" && (
-                    <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4">
-                      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
-                        {/* 카드 */}
-                        <TodayRollCallStatisticsChart todayRollCallStatistics={todayRollCallStatistics} />
-                      </div>
-                      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
-                        {/* 카드 */}
-                        <TodayApplicationStatisticsChart todayApplicationStatistics={todayApplicationStatistics} />
-                      </div>
-                      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
-                        {/* 카드 */}
-                        {/* <TodayRollCallStatisticsChart /> */}
-                      </div>
-                    </div>
-                  )}
-                  {selectedOption === "주간" && <span>주간</span>}
-                  {selectedOption === "월간" && <span>월간</span>}
-                  {selectedOption === "날짜 직접 입력" && <span>날짜 직접 입력</span>}
+                  {todayRollCallStatistics &&
+                    todayApplicationStatistics &&
+                    todayPointStatistics &&
+                    rollcallCompareStatistics &&
+                    applicationCompareStatistics &&
+                    selectedOption === "일간" && (
+                      <>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계</h1>
+                            </div>
+                            {!todayRollCallStatistics.some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 점호 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <TodayRollCallStatisticsChart todayRollCallStatistics={todayRollCallStatistics} />
+                            )}
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 통계</h1>
+                            </div>
+                            {!todayApplicationStatistics.some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 외박 신청 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <TodayApplicationStatisticsChart todayApplicationStatistics={todayApplicationStatistics} />
+                            )}
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계</h1>
+                            </div>
+                            {!todayPointStatistics.some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 상벌점 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <TodayPointStatisticsChart todayPointStatistics={todayPointStatistics} />
+                            )}
+                          </div>
+                        </div>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                            </div>
+                            <TodayRollCallCompareChart todayRollCallCompareStatistics={rollcallCompareStatistics} />
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
+                            </div>
+                            <TodayApplicationCompareChart todayApplicationCompareStatistics={applicationCompareStatistics} />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  {rollCallStatistics &&
+                    applicationStatistics &&
+                    todayPointStatistics &&
+                    rollcallCompareStatistics &&
+                    applicationCompareStatistics &&
+                    selectedOption === "주간" && (
+                      <>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계</h1>
+                            </div>
+                            {!Object.values(rollCallStatistics).some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 점호 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <RollCallStatisticsChart rollCallStatistics={rollCallStatistics} />
+                            )}
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 통계</h1>
+                            </div>
+                            {!Object.values(applicationStatistics).some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 외박 신청 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
+                            )}
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계</h1>
+                            </div>
+                            {!Object.values(pointStatistics).some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 상벌점 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <PointStatisticsChart pointStatistics={pointStatistics} />
+                            )}
+                          </div>
+                        </div>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                            </div>
+                            <WeeklyRollCallCompareChart weeklyRollCallCompareStatistics={rollcallCompareStatistics} period={compareDay} />
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
+                            </div>
+                            <WeeklyApplicationCompareChart weeklyApplicationCompareStatistics={applicationCompareStatistics} period={compareDay} />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  {rollCallStatistics &&
+                    applicationStatistics &&
+                    todayPointStatistics &&
+                    rollcallCompareStatistics &&
+                    applicationCompareStatistics &&
+                    selectedOption === "월간" && (
+                      <>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계</h1>
+                            </div>
+                            {!Object.values(rollCallStatistics).some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 점호 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <RollCallStatisticsChart rollCallStatistics={rollCallStatistics} />
+                            )}
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 통계</h1>
+                            </div>
+                            {!Object.values(applicationStatistics).some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 외박 신청 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
+                            )}
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계</h1>
+                            </div>
+                            {!Object.values(pointStatistics).some((stat) => stat.value) ? (
+                              <div className="text-center">
+                                <span className="font-bold text-xl">오늘 상벌점 통계가 아직 없습니다.</span>
+                              </div>
+                            ) : (
+                              <PointStatisticsChart pointStatistics={pointStatistics} />
+                            )}
+                          </div>
+                        </div>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                            </div>
+                            <WeeklyRollCallCompareChart weeklyRollCallCompareStatistics={rollcallCompareStatistics} period={compareDay} />
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
+                            </div>
+                            <WeeklyApplicationCompareChart weeklyApplicationCompareStatistics={applicationCompareStatistics} period={compareDay} />
+                          </div>
+                        </div>
+                      </>
+                    )}
                 </div>
               </div>
             </div>
