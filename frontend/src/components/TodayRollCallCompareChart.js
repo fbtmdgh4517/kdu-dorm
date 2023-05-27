@@ -48,17 +48,12 @@ const TodayRollCallCompareChart = ({ todayRollCallCompareStatistics }) => {
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
-          } else {
+          } else if (groupedRecords[label][0].is_checked === "무단외박") {
             return groupedRecords[label][0]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   if (!data[0]) {
-        //     return 0;
-        //   } else {
-        //     return data[0]["count(*)"];
-        //   }
-        // }),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
@@ -67,17 +62,16 @@ const TodayRollCallCompareChart = ({ todayRollCallCompareStatistics }) => {
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
-          } else {
+          } else if (groupedRecords[label][0].is_checked === "완료") {
+            return groupedRecords[label][0]["count(*)"];
+          } else if (groupedRecords[label][1] && groupedRecords[label][1].is_checked === "완료") {
+            return groupedRecords[label][1]["count(*)"];
+          } else if (groupedRecords[label][2] && groupedRecords[label][2].is_checked === "완료") {
             return groupedRecords[label][2]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   if (!data[2]) {
-        //     return 0;
-        //   } else {
-        //     return data[2]["count(*)"];
-        //   }
-        // }),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
@@ -86,17 +80,14 @@ const TodayRollCallCompareChart = ({ todayRollCallCompareStatistics }) => {
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
-          } else {
+          } else if (groupedRecords[label][0].is_checked === "외박") {
+            return groupedRecords[label][0]["count(*)"];
+          } else if (groupedRecords[label][1] && groupedRecords[label][1].is_checked === "외박") {
             return groupedRecords[label][1]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   if (!data[1]) {
-        //     return 0;
-        //   } else {
-        //     return data[1]["count(*)"];
-        //   }
-        // }),
         borderColor: "rgb(75, 192, 192)",
         backgroundColor: "rgba(75, 192, 192, 0.5)",
       },

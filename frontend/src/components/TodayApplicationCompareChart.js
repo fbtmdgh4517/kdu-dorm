@@ -19,6 +19,14 @@ const TodayApplicationCompareChart = ({ todayApplicationCompareStatistics }) => 
 
   // console.log(todayApplicationCompareStatistics);
 
+  const weekDate = [];
+  for (let i = 0; i <= 1; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    weekDate.push(date.toLocaleDateString());
+  }
+  weekDate.reverse();
+
   const groupedRecords = todayApplicationCompareStatistics.reduce((acc, cur) => {
     const date = new Date(cur.application_date).toLocaleDateString();
     if (!acc[date]) {
@@ -28,21 +36,27 @@ const TodayApplicationCompareChart = ({ todayApplicationCompareStatistics }) => 
     return acc;
   }, {});
 
-  console.log(Object.keys(groupedRecords));
-  console.log(Object.values(groupedRecords));
+  // console.log(Object.keys(groupedRecords));
+  // console.log(Object.values(groupedRecords));
+  // console.log(weekDate);
+  // console.log(groupedRecords);
 
-  const labels = Object.keys(groupedRecords);
+  const labels = weekDate;
 
   const data = {
     labels,
     datasets: [
       {
         label: "외박신청 승인 수",
-        data: Object.values(groupedRecords).map((data) => {
-          if (!data[0]) {
+        data: labels.map((label) => {
+          if (!groupedRecords[label]) {
             return 0;
+          } else if (groupedRecords[label][0].approval_status === "거부") {
+            return 0;
+          } else if (groupedRecords[label][0].approval_status === "승인") {
+            return groupedRecords[label][0]["count(*)"];
           } else {
-            return data[0]["count(*)"];
+            return 0;
           }
         }),
         borderColor: "rgb(255, 99, 132)",
@@ -50,11 +64,17 @@ const TodayApplicationCompareChart = ({ todayApplicationCompareStatistics }) => 
       },
       {
         label: "외박신청 거부 수",
-        data: Object.values(groupedRecords).map((data) => {
-          if (!data[1]) {
+        data: labels.map((label) => {
+          if (!groupedRecords[label]) {
             return 0;
+          } else if (groupedRecords[label][0].approval_status === "거부") {
+            return groupedRecords[label][0]["count(*)"];
+          } else if (!groupedRecords[label][1]) {
+            return 0;
+          } else if (groupedRecords[label][1].approval_status === "거부") {
+            return groupedRecords[label][1]["count(*)"];
           } else {
-            return data[1]["count(*)"];
+            return 0;
           }
         }),
         borderColor: "rgb(53, 162, 235)",

@@ -3,7 +3,7 @@ import { Line } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period }) => {
+const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period, titleText }) => {
   const options = {
     responsive: true,
     plugins: {
@@ -12,20 +12,20 @@ const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period })
       },
       title: {
         display: true,
-        text: "주간 점호 통계 그래프",
+        text: titleText,
       },
     },
   };
-  console.log(weeklyRollCallCompareStatistics);
+  // console.log(weeklyRollCallCompareStatistics);
 
   const weekDate = [];
-  for (let i = 0; i < period; i++) {
+  for (let i = 0; i <= period; i++) {
     const date = new Date();
     date.setDate(date.getDate() - i);
     weekDate.push(date.toLocaleDateString());
   }
   weekDate.reverse();
-  console.log(weekDate);
+  // console.log(weekDate);
 
   const groupedRecords = weeklyRollCallCompareStatistics.reduce((acc, cur) => {
     const date = new Date(cur.record_date).toLocaleDateString();
@@ -38,7 +38,7 @@ const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period })
 
   const labels = weekDate;
 
-  console.log(Object.values(groupedRecords));
+  // console.log(Object.values(groupedRecords));
   console.log(groupedRecords);
   const data = {
     labels,
@@ -48,23 +48,12 @@ const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period })
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
-          } else if (!groupedRecords[label][0]) {
-            return 0;
-          } else {
+          } else if (groupedRecords[label][0].is_checked === "무단외박") {
             return groupedRecords[label][0]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   labels.map((label) => {
-        //     if (label !== new Date(data[0].record_date).toLocaleDateString()) {
-        //       return 0;
-        //     } else if (!data[0]) {
-        //       return 0;
-        //     } else {
-        //       return data[0]["count(*)"];
-        //     }
-        //   });
-        // }),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
@@ -73,23 +62,16 @@ const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period })
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
-          } else if (!groupedRecords[label][2]) {
-            return 0;
-          } else {
+          } else if (groupedRecords[label][0].is_checked === "완료") {
+            return groupedRecords[label][0]["count(*)"];
+          } else if (groupedRecords[label][1] && groupedRecords[label][1].is_checked === "완료") {
+            return groupedRecords[label][1]["count(*)"];
+          } else if (groupedRecords[label][2] && groupedRecords[label][2].is_checked === "완료") {
             return groupedRecords[label][2]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   labels.map((label) => {
-        //     if (label !== new Date(data[2].record_date).toLocaleDateString()) {
-        //       return 0;
-        //     } else if (!data[2]) {
-        //       return 0;
-        //     } else {
-        //       return data[2]["count(*)"];
-        //     }
-        //   });
-        // }),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
@@ -98,23 +80,14 @@ const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period })
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
-          } else if (!groupedRecords[label][1]) {
-            return 0;
-          } else {
+          } else if (groupedRecords[label][0].is_checked === "외박") {
+            return groupedRecords[label][0]["count(*)"];
+          } else if (groupedRecords[label][1] && groupedRecords[label][1].is_checked === "외박") {
             return groupedRecords[label][1]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   labels.map((label) => {
-        //     if (label !== new Date(data[1].record_date).toLocaleDateString()) {
-        //       return 0;
-        //     } else if (!data[1]) {
-        //       return 0;
-        //     } else {
-        //       return data[1]["count(*)"];
-        //     }
-        //   });
-        // }),
         borderColor: "rgb(75, 192, 192)",
         backgroundColor: "rgba(75, 192, 192, 0.5)",
       },

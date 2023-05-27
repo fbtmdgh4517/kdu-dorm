@@ -3,7 +3,7 @@ import { Line } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, period }) => {
+const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, period, titleText }) => {
   const options = {
     responsive: true,
     plugins: {
@@ -12,7 +12,7 @@ const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, per
       },
       title: {
         display: true,
-        text: "주간 외박신청 통계 그래프",
+        text: titleText,
       },
     },
   };
@@ -20,7 +20,7 @@ const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, per
   // console.log(weeklyApplicationCompareStatistics);
 
   const weekDate = [];
-  for (let i = 0; i < period; i++) {
+  for (let i = 0; i <= period; i++) {
     const date = new Date();
     date.setDate(date.getDate() - i);
     weekDate.push(date.toLocaleDateString());
@@ -36,10 +36,10 @@ const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, per
     return acc;
   }, {});
 
-  console.log(Object.keys(groupedRecords));
-  console.log(Object.values(groupedRecords));
+  // console.log(Object.keys(groupedRecords));
+  // console.log(Object.values(groupedRecords));
   // console.log(groupedRecords[labels[0]]);
-  console.log(groupedRecords);
+  // console.log(groupedRecords);
 
   const labels = weekDate;
 
@@ -51,19 +51,14 @@ const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, per
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
-          } else if (!groupedRecords[label][0]) {
+          } else if (groupedRecords[label][0].approval_status === "거부") {
             return 0;
-          } else {
+          } else if (groupedRecords[label][0].approval_status === "승인") {
             return groupedRecords[label][0]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   if (!data[0]) {
-        //     return 0;
-        //   } else {
-        //     return data[0]["count(*)"];
-        //   }
-        // }),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
@@ -72,19 +67,16 @@ const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, per
         data: labels.map((label) => {
           if (!groupedRecords[label]) {
             return 0;
+          } else if (groupedRecords[label][0].approval_status === "거부") {
+            return groupedRecords[label][0]["count(*)"];
           } else if (!groupedRecords[label][1]) {
             return 0;
-          } else {
+          } else if (groupedRecords[label][1].approval_status === "거부") {
             return groupedRecords[label][1]["count(*)"];
+          } else {
+            return 0;
           }
         }),
-        // data: Object.values(groupedRecords).map((data) => {
-        //   if (!data[1]) {
-        //     return 0;
-        //   } else {
-        //     return data[1]["count(*)"];
-        //   }
-        // }),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
