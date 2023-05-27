@@ -44,8 +44,6 @@ router.get("/todayStatistics", (req, res) => {
 
 router.get("/compareStatistics/:day", (req, res) => {
   const day = req.params.day;
-  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
-  const today = new Date();
   const query =
     "SELECT record_date, dayofweek(record_date) as _day, count(*), is_checked " +
     "FROM rollcall_records " +
@@ -80,9 +78,24 @@ router.get("/compareStatistics/:day", (req, res) => {
     "GROUP BY dayofweek(date(application_time)), date(application_time) " +
     "ORDER BY application_date";
 
+  const pointQuery =
+    "SELECT date(score_date) score_date, dayofweek(date(score_date)) as _day, count(*), score_type " +
+    "FROM score_records " +
+    "WHERE score_type = '상점' " +
+    `AND score_date >= CURRENT_DATE() - INTERVAL ${day} DAY ` +
+    "GROUP BY dayofweek(date(score_date)), date(score_date) " +
+    "UNION ALL " +
+    "SELECT date(score_date), dayofweek(date(score_date)) as _day, count(*), score_type " +
+    "FROM score_records " +
+    "WHERE score_type = '벌점' " +
+    `AND score_date >= CURRENT_DATE() - INTERVAL ${day} DAY ` +
+    "GROUP BY dayofweek(date(score_date)), date(score_date) " +
+    "ORDER BY score_date";
+
   const sendData = {
     rollCallCompareStatistics: [],
     applicationCompareStatistics: [],
+    pointCompareStatistics: [],
   };
 
   db.query(query, (error, results) => {
@@ -93,6 +106,11 @@ router.get("/compareStatistics/:day", (req, res) => {
   db.query(applicationQuery, (error, results) => {
     if (error) throw error;
     sendData.applicationCompareStatistics = results;
+  });
+
+  db.query(pointQuery, (error, results) => {
+    if (error) throw error;
+    sendData.pointCompareStatistics = results;
     res.send(sendData);
   });
 });
@@ -238,65 +256,65 @@ router.get("/monthlyStatistics", (req, res) => {
   });
 });
 
-router.get("/weeklyCompareStatistics", (req, res) => {
-  const todayDate = new Date();
-  const year = todayDate.getFullYear();
-  const month = todayDate.getMonth() + 1;
-  const date = todayDate.getDate();
+// router.get("/weeklyCompareStatistics", (req, res) => {
+//   const todayDate = new Date();
+//   const year = todayDate.getFullYear();
+//   const month = todayDate.getMonth() + 1;
+//   const date = todayDate.getDate();
 
-  const sendData = {
-    applicationStatistics: [],
-    rollCallStatistics: [],
-  };
+//   const sendData = {
+//     applicationStatistics: [],
+//     rollCallStatistics: [],
+//   };
 
-  const applicationQuery =
-    "SELECT '외박신청 승인 수' as id, date(application_time) application_date, count(*) " +
-    "FROM overnight_applications " +
-    "WHERE application_time BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
-    "AND approval_status = '승인' " +
-    "GROUP BY date(application_time) " +
-    "UNION ALL " +
-    "SELECT '외박신청 거부 수' as id, date(application_time) application_date, count(*) " +
-    "FROM overnight_applications " +
-    "WHERE application_time BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
-    "AND approval_status = '거부' " +
-    "GROUP BY date(application_time) " +
-    "ORDER BY application_date";
+//   const applicationQuery =
+//     "SELECT '외박신청 승인 수' as id, date(application_time) application_date, count(*) " +
+//     "FROM overnight_applications " +
+//     "WHERE application_time BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
+//     "AND approval_status = '승인' " +
+//     "GROUP BY date(application_time) " +
+//     "UNION ALL " +
+//     "SELECT '외박신청 거부 수' as id, date(application_time) application_date, count(*) " +
+//     "FROM overnight_applications " +
+//     "WHERE application_time BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
+//     "AND approval_status = '거부' " +
+//     "GROUP BY date(application_time) " +
+//     "ORDER BY application_date";
 
-  const rollCallQuery =
-    "SELECT '외박 인원 수' as id, record_date, count(*) " +
-    "FROM rollcall_records " +
-    "WHERE record_date BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
-    "AND is_checked = '외박' " +
-    "GROUP BY record_date " +
-    "UNION ALL " +
-    "SELECT '무단 외박 인원 수' as id, record_date, count(*) " +
-    "FROM rollcall_records " +
-    "WHERE record_date BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
-    "AND is_checked = '무단외박' " +
-    "GROUP BY record_date " +
-    "UNION ALL " +
-    "SELECT '점호 완료 인원 수' as id, record_date, count(*) " +
-    "FROM rollcall_records " +
-    "WHERE record_date BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
-    "AND is_checked = '완료' " +
-    "GROUP BY record_date " +
-    "ORDER BY record_date";
+//   const rollCallQuery =
+//     "SELECT '외박 인원 수' as id, record_date, count(*) " +
+//     "FROM rollcall_records " +
+//     "WHERE record_date BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
+//     "AND is_checked = '외박' " +
+//     "GROUP BY record_date " +
+//     "UNION ALL " +
+//     "SELECT '무단 외박 인원 수' as id, record_date, count(*) " +
+//     "FROM rollcall_records " +
+//     "WHERE record_date BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
+//     "AND is_checked = '무단외박' " +
+//     "GROUP BY record_date " +
+//     "UNION ALL " +
+//     "SELECT '점호 완료 인원 수' as id, record_date, count(*) " +
+//     "FROM rollcall_records " +
+//     "WHERE record_date BETWEEN date_add(now(), INTERVAL -1 WEEK) AND now() " +
+//     "AND is_checked = '완료' " +
+//     "GROUP BY record_date " +
+//     "ORDER BY record_date";
 
-  db.query(applicationQuery, (error, results) => {
-    if (error) throw error;
-    // console.log(results);
-    sendData.applicationStatistics = results;
-    // res.send(sendData);
-  });
+//   db.query(applicationQuery, (error, results) => {
+//     if (error) throw error;
+//     // console.log(results);
+//     sendData.applicationStatistics = results;
+//     // res.send(sendData);
+//   });
 
-  db.query(rollCallQuery, (error, results) => {
-    if (error) throw error;
-    // console.log(results);
-    sendData.rollCallStatistics = results;
-    console.log(sendData);
-    res.send(sendData);
-  });
-});
+//   db.query(rollCallQuery, (error, results) => {
+//     if (error) throw error;
+//     // console.log(results);
+//     sendData.rollCallStatistics = results;
+//     console.log(sendData);
+//     res.send(sendData);
+//   });
+// });
 
 module.exports = router;
