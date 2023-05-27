@@ -254,7 +254,6 @@ const RollCallPage = () => {
                                           })}
                                           id={student.student_id}
                                           className="shadow-md rounded-3xl h-[40px] w-[90px] bg-green-600 items-center text-base font-medium text-white text-center"
-                                          defaultValue={"외박"}
                                         >
                                           <option value="--">--</option>
                                           <option value="외박">외박</option>
