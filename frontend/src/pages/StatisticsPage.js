@@ -12,6 +12,7 @@ import ApplicationStatisticsChart from "../components/ApplicationStatisticsChart
 import PointStatisticsChart from "../components/PointStatisticsChart";
 import WeeklyRollCallCompareChart from "../components/WeeklyRollCallCompareChart";
 import WeeklyApplicationCompareChart from "../components/WeeklyApplicationCompareChart";
+import ByPeriodPointCompareChart from "../components/ByPeriodPointCompareChart";
 
 const StatisticsPage = () => {
   const [todayStatistics, setTodayStatistics] = useState();
@@ -21,6 +22,7 @@ const StatisticsPage = () => {
 
   const [rollcallCompareStatistics, setRollCallCompareStatistics] = useState([]);
   const [applicationCompareStatistics, setApplicationCompareStatistics] = useState([]);
+  const [pointCompareStatistics, setPointCompareStatistics] = useState([]);
 
   const [rollCallStatistics, setRollCallStatistics] = useState([]);
   const [applicationStatistics, setApplicationStatistics] = useState([]);
@@ -44,10 +46,10 @@ const StatisticsPage = () => {
   const fetchCompareStatistics = async () => {
     try {
       const res = await axios.get(`http://localhost:4000/statistics/compareStatistics/${compareDay}`, { withCredentials: true });
-      console.log(res.data.rollCallCompareStatistics);
-      console.log(res.data.applicationCompareStatistics);
+      console.log(res.data);
       setRollCallCompareStatistics(res.data.rollCallCompareStatistics);
       setApplicationCompareStatistics(res.data.applicationCompareStatistics);
+      setPointCompareStatistics(res.data.pointCompareStatistics);
     } catch (err) {
       console.log(err);
     }
@@ -133,6 +135,15 @@ const StatisticsPage = () => {
                               <TodayRollCallStatisticsChart todayRollCallStatistics={todayRollCallStatistics} />
                             )}
                           </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                            </div>
+                            <TodayRollCallCompareChart todayRollCallCompareStatistics={rollcallCompareStatistics} />
+                          </div>
+                        </div>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
@@ -145,6 +156,13 @@ const StatisticsPage = () => {
                             ) : (
                               <TodayApplicationStatisticsChart todayApplicationStatistics={todayApplicationStatistics} />
                             )}
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
+                            </div>
+                            <TodayApplicationCompareChart todayApplicationCompareStatistics={applicationCompareStatistics} />
                           </div>
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
@@ -159,21 +177,16 @@ const StatisticsPage = () => {
                               <TodayPointStatisticsChart todayPointStatistics={todayPointStatistics} />
                             )}
                           </div>
-                        </div>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
-                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                              <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계 그래프</h1>
                             </div>
-                            <TodayRollCallCompareChart todayRollCallCompareStatistics={rollcallCompareStatistics} />
-                          </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
-                            {/* 카드 */}
-                            <div className="flex items-center justify-between mb-4">
-                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
-                            </div>
-                            <TodayApplicationCompareChart todayApplicationCompareStatistics={applicationCompareStatistics} />
+                            <ByPeriodPointCompareChart
+                              pointCompareStatistics={pointCompareStatistics}
+                              period={compareDay}
+                              titleText="일간 상벌점 통계 그래프"
+                            />
                           </div>
                         </div>
                       </>
@@ -199,47 +212,54 @@ const StatisticsPage = () => {
                               <RollCallStatisticsChart rollCallStatistics={rollCallStatistics} />
                             )}
                           </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                            </div>
+                            <WeeklyRollCallCompareChart
+                              weeklyRollCallCompareStatistics={rollcallCompareStatistics}
+                              period={compareDay}
+                              titleText="주간 점호 통계 그래프"
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 통계</h1>
                             </div>
-                            {!Object.values(applicationStatistics).some((stat) => stat.value) ? (
-                              <div className="text-center">
-                                <span className="font-bold text-xl">오늘 외박 신청 통계가 아직 없습니다.</span>
-                              </div>
-                            ) : (
-                              <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
-                            )}
+                            <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
+                            </div>
+                            <WeeklyApplicationCompareChart
+                              weeklyApplicationCompareStatistics={applicationCompareStatistics}
+                              period={compareDay}
+                              titleText="주간 외박신청 통계 그래프"
+                            />
                           </div>
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계</h1>
                             </div>
-                            {!Object.values(pointStatistics).some((stat) => stat.value) ? (
-                              <div className="text-center">
-                                <span className="font-bold text-xl">오늘 상벌점 통계가 아직 없습니다.</span>
-                              </div>
-                            ) : (
-                              <PointStatisticsChart pointStatistics={pointStatistics} />
-                            )}
+                            <PointStatisticsChart pointStatistics={pointStatistics} />
                           </div>
-                        </div>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
-                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                              <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계 그래프</h1>
                             </div>
-                            <WeeklyRollCallCompareChart weeklyRollCallCompareStatistics={rollcallCompareStatistics} period={compareDay} />
-                          </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
-                            {/* 카드 */}
-                            <div className="flex items-center justify-between mb-4">
-                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
-                            </div>
-                            <WeeklyApplicationCompareChart weeklyApplicationCompareStatistics={applicationCompareStatistics} period={compareDay} />
+                            <ByPeriodPointCompareChart
+                              pointCompareStatistics={pointCompareStatistics}
+                              period={compareDay}
+                              titleText="주간 상벌점 통계 그래프"
+                            />
                           </div>
                         </div>
                       </>
@@ -265,47 +285,57 @@ const StatisticsPage = () => {
                               <RollCallStatisticsChart rollCallStatistics={rollCallStatistics} />
                             )}
                           </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                            </div>
+                            <WeeklyRollCallCompareChart
+                              weeklyRollCallCompareStatistics={rollcallCompareStatistics}
+                              period={compareDay}
+                              titleText="월간 점호 통계 그래프"
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 통계</h1>
                             </div>
-                            {!Object.values(applicationStatistics).some((stat) => stat.value) ? (
-                              <div className="text-center">
-                                <span className="font-bold text-xl">오늘 외박 신청 통계가 아직 없습니다.</span>
-                              </div>
-                            ) : (
-                              <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
-                            )}
+                            <div className="text-center">
+                              <span className="font-bold text-xl">오늘 외박 신청 통계가 아직 없습니다.</span>
+                            </div>
+                            <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
+                          </div>
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                            {/* 카드 */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
+                            </div>
+                            <WeeklyApplicationCompareChart
+                              weeklyApplicationCompareStatistics={applicationCompareStatistics}
+                              period={compareDay}
+                              titleText="월간 외박신청 통계 그래프"
+                            />
                           </div>
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계</h1>
                             </div>
-                            {!Object.values(pointStatistics).some((stat) => stat.value) ? (
-                              <div className="text-center">
-                                <span className="font-bold text-xl">오늘 상벌점 통계가 아직 없습니다.</span>
-                              </div>
-                            ) : (
-                              <PointStatisticsChart pointStatistics={pointStatistics} />
-                            )}
+                            <PointStatisticsChart pointStatistics={pointStatistics} />
                           </div>
-                        </div>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
-                              <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
+                              <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계 그래프</h1>
                             </div>
-                            <WeeklyRollCallCompareChart weeklyRollCallCompareStatistics={rollcallCompareStatistics} period={compareDay} />
-                          </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
-                            {/* 카드 */}
-                            <div className="flex items-center justify-between mb-4">
-                              <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
-                            </div>
-                            <WeeklyApplicationCompareChart weeklyApplicationCompareStatistics={applicationCompareStatistics} period={compareDay} />
+                            <ByPeriodPointCompareChart
+                              pointCompareStatistics={pointCompareStatistics}
+                              period={compareDay}
+                              titleText="월간 상벌점 통계 그래프"
+                            />
                           </div>
                         </div>
                       </>
