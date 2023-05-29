@@ -26,11 +26,15 @@ const SinchungPage = () => {
   }, [isLogin]);
 
   const onSubmit = (data) => {
+    // data.end_Date log, new Date(data.end_date) 해서 1일 더한 값으로 넣어주거나 일은 놔두고 시간이랑 분을 23:59로 넣어주거나
+    const endDate = new Date(data.end_date);
+    endDate.setDate(endDate.getDate() + 1);
+
     axios
       .post("http://localhost:4000/application/application", {
         student_id: studentId,
         start_date: data.start_date,
-        end_date: data.end_date,
+        end_date: endDate.toISOString().slice(0, 10),
         reason: data.reason,
       })
       .then((res) => {
@@ -48,7 +52,7 @@ const SinchungPage = () => {
       <HeaderContainer></HeaderContainer>
       <div className="flex overflow-hidden bg-white pt-16">
         <SidebarContainer></SidebarContainer>
-        <div id="main-content" className="h-full w-full bg-blue-200 relative overflow-y-auto lg:ml-64 pt-3">
+        <div id="main-content" className="h-full w-full bg-blue-200 relative overflow-y-auto lg:ml-56">
           <main>
             <div className="py-9 px-4">
               <div className="w-full gap-4">
@@ -73,7 +77,7 @@ const SinchungPage = () => {
                             : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
                         }
                         type="date"
-                        min={new Date().toISOString().split("T")[0]}
+                        min={new Date(new Date().getTime() + 1000 * 60 * 60 * 9).toISOString().split("T")[0]}
                       />
                       {errors.start_date && <span className="text-red-500">{errors.start_date.message}</span>}
                     </div>
@@ -92,7 +96,7 @@ const SinchungPage = () => {
                             : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
                         }
                         type="date"
-                        min={new Date().toISOString().split("T")[0]}
+                        min={new Date(new Date().getTime() + 1000 * 60 * 60 * 9).toISOString().split("T")[0]}
                       />
                       {errors.end_date && <span className="text-red-500">{errors.end_date.message}</span>}
                     </div>
