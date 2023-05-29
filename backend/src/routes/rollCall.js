@@ -12,9 +12,19 @@ router.post("/checkComplete", (req, res) => {
   const day = todayDate.getDate();
 
   for (let i = 0; i < studentId.length; i++) {
-    // console.log(studentId[i], isChecked[i], date);
     const query = `INSERT INTO rollcall_records (student_id, is_checked, record_date) VALUES (${studentId[i]}, "${isChecked[i]}", "${year}-${month}-${day}")`;
-    console.log(query);
+    if (isChecked[i] === "무단외박") {
+      const penaltyUpdateQuery = `UPDATE students SET penalty = penalty + 1 WHERE student_id = ${studentId[i]}`;
+      const penaltyRecordQuery = `INSERT INTO score_records (student_id, score_type, given_score, score_reason) VALUES (${studentId[i]}, '벌점', 3, '점호 불참으로 인한 벌점')`;
+
+      db.query(penaltyUpdateQuery, (error, results) => {
+        if (error) throw error;
+      });
+
+      db.query(penaltyRecordQuery, (error, results) => {
+        if (error) throw error;
+      });
+    }
     db.query(query, (error, results) => {
       if (error) throw error;
       console.log("점호 완료");
