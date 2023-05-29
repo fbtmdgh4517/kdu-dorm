@@ -76,23 +76,23 @@ const SignupCheckPage = () => {
                     <h1 className="text-xl font-bold leading-none text-gray-900">회원가입 신청</h1>
                   </div>
                   <div className="container mx-auto mb-5">
-                    <h1 className="font-medium">학번</h1>
+                    <h1 className="font-semibold">학번</h1>
                     <span>{signupRequestInfo.student_id}</span>
                   </div>
                   <div className="container mx-auto mb-5">
-                    <h1 className="font-medium">학과</h1>
+                    <h1 className="font-semibold">학과</h1>
                     <span>{signupRequestInfo.student_department}</span>
                   </div>
                   <div className="container mx-auto mb-5">
-                    <h1 className="font-medium">이름</h1>
+                    <h1 className="font-semibold">이름</h1>
                     <span>{signupRequestInfo.student_name}</span>
                   </div>
                   <div className="container mx-auto mb-5">
-                    <h1 className="font-medium">연락처</h1>
+                    <h1 className="font-semibold">연락처</h1>
                     <span>{signupRequestInfo.student_contact}</span>
                   </div>
                   <div className="container mx-auto mb-5">
-                    <h1 className="font-medium">호실</h1>
+                    <h1 className="font-semibold">호실</h1>
                     <span>{signupRequestInfo.student_room}</span>
                   </div>
                   {signupRequestInfo.request_status === "미확인" && (
