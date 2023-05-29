@@ -29,12 +29,15 @@ const SinchungCheckPage = () => {
       .then((res) => {
         console.log(res.data);
         setApplicationInfo(res.data[0]);
-        const applicationStartYear = new Date(res.data[0].start_date).getFullYear();
-        const applicationStartMonth = new Date(res.data[0].start_date).getMonth() + 1;
-        const applicationStartDate = new Date(res.data[0].start_date).getDate();
-        const applicationEndYear = new Date(res.data[0].end_date).getFullYear();
-        const applicationEndMonth = new Date(res.data[0].end_date).getMonth() + 1;
-        const applicationEndDate = new Date(res.data[0].end_date).getDate();
+        const startDate = new Date(res.data[0].start_date);
+        const endDate = new Date(res.data[0].end_date);
+        endDate.setDate(endDate.getDate() - 1);
+        const applicationStartYear = startDate.getFullYear();
+        const applicationStartMonth = startDate.getMonth() + 1;
+        const applicationStartDate = startDate.getDate();
+        const applicationEndYear = endDate.getFullYear();
+        const applicationEndMonth = endDate.getMonth() + 1;
+        const applicationEndDate = endDate.getDate();
         setStartDate(`${applicationStartYear}-${applicationStartMonth}-${applicationStartDate}`);
         setEndDate(`${applicationEndYear}-${applicationEndMonth}-${applicationEndDate}`);
       })
@@ -76,6 +79,7 @@ const SinchungCheckPage = () => {
       )
       .then((res) => {
         alert("외박 신청 거부가 완료되었습니다.");
+        setIsRefused(!isRefused);
         fetchData();
       })
       .catch((err) => {
@@ -196,18 +200,38 @@ const SinchungCheckPage = () => {
                       </form>
                     </>
                   ) : (
-                    // 수정 버튼을 누르지 않았을 경우
+                    // 외박신청 정보
                     <>
                       <div className="container mx-auto mb-5">
-                        <h1 className="font-medium">외박 시작일</h1>
+                        <h1 className="font-semibold">학번</h1>
+                        <span>{applicationInfo.student_id}</span>
+                      </div>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-semibold">학과</h1>
+                        <span>{applicationInfo.student_department}</span>
+                      </div>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-semibold">이름</h1>
+                        <span>{applicationInfo.student_name}</span>
+                      </div>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-semibold">호실</h1>
+                        <span>{applicationInfo.student_room}</span>
+                      </div>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-semibold">연락처</h1>
+                        <span>{applicationInfo.student_contact}</span>
+                      </div>
+                      <div className="container mx-auto mb-5">
+                        <h1 className="font-semibold">외박 시작일</h1>
                         <span>{startDate}</span>
                       </div>
                       <div className="container mx-auto mb-5">
-                        <h1 className="font-medium">외박 종료일</h1>
+                        <h1 className="font-semibold">외박 종료일</h1>
                         <span>{endDate}</span>
                       </div>
                       <div className="container mx-auto mb-5">
-                        <h1 className="font-medium">외박 사유</h1>
+                        <h1 className="font-semibold">외박 사유</h1>
                         <span>{applicationInfo.application_reason}</span>
                       </div>
                     </>
@@ -231,7 +255,7 @@ const SinchungCheckPage = () => {
                   )}
                   {/* 관리자 계정이고 외박신청의 상태가 미확인일 경우 수락, 거절 버튼 출력 */}
                   {userAuthInfo.data.isAdmin && applicationInfo.approval_status === "미확인" && (
-                    <div className="flex justify-between  md:mx-40 my-5">
+                    <div className="flex justify-between md:mx-40 my-5">
                       <button
                         onClick={onAcceptApplication}
                         className="shadow-md rounded-3xl h-[35px] w-[85px] bg-blue-500 items-center justify-center self-center text-base font-medium text-white hover:bg-blue-700 mx-auto transition ease-in-out hover:scale-110 flex"
