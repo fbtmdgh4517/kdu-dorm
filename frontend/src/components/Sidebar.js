@@ -30,6 +30,11 @@ const Sidebar = ({ onLogout, userAuthInfo }) => {
                       </Link>
                     </li>
                     <li>
+                      <Link to="/rollCallRecord" className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
+                        <span className="ml-3">점호 기록</span>
+                      </Link>
+                    </li>
+                    <li>
                       <Link to="/statistics" className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
                         <span className="ml-3">통계</span>
                       </Link>
