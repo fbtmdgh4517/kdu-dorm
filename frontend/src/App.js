@@ -13,6 +13,7 @@ import { RecoilRoot } from "recoil";
 import PointPage from "./pages/PointPage";
 import RollCallPage from "./pages/RollCallPage";
 import StatisticsPage from "./pages/StatisticsPage";
+import RollCallRecordPage from "./pages/RollCallRecordPage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/managePoint" element={<PointPage />} />
         <Route path="/rollCall" element={<RollCallPage />} />
         <Route path="/statistics" element={<StatisticsPage />} />
+        <Route path="/rollCallRecord" element={<RollCallRecordPage />} />
       </Routes>
     </RecoilRoot>
   );
