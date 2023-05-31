@@ -97,30 +97,6 @@ const RollCallPage = () => {
     }
   };
 
-  const onFloorChange = async (e) => {
-    try {
-      console.log(e.target.value);
-      setFloor(e.target.value);
-      const res = await axios.get(`http://localhost:4000/students/floorStudentList/${e.target.value}`, {
-        withCredentials: true,
-      });
-      console.log(res.data);
-      // const roomStudent = studentList.contents.data.reduce((acc, cur) => {
-      //   const room = cur.student_room;
-      //   if (acc[room]) {
-      //     acc[room].push(cur);
-      //   } else {
-      //     acc[room] = [cur];
-      //   }
-      //   return acc;
-      // }, {});
-      // console.log(roomStudent);
-      // setRoomList(roomStudent);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const onSubmit = async (data) => {
     try {
       console.log(data);
@@ -168,19 +144,6 @@ const RollCallPage = () => {
                     <p className="text-lg font-semibold m-4">
                       {todayDate.year}년 {todayDate.month}월 {todayDate.date}일 {todayDate.day}요일
                     </p>
-                    {/* <select
-                      className="shadow-md rounded-3xl h-[40px] w-[90px] bg-black items-center text-base font-medium text-white text-center mb-4"
-                      onChange={onFloorChange}
-                    >
-                      <option value="1">1층</option>
-                      <option value="2">2층</option>
-                      <option value="3">3층</option>
-                      <option value="4">4층</option>
-                      <option value="5">5층</option>
-                      <option value="6">6층</option>
-                      <option value="7">7층</option>
-                      <option value="8">8층</option>
-                    </select> */}
                     <div>
                       <form method="post" onSubmit={handleSubmit(onSubmit)}>
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -277,7 +240,7 @@ const RollCallPage = () => {
                                               rollCallList.find((rollCall) => rollCall.student_id === student.student_id).is_checked === "완료"
                                                 ? "shadow-md rounded-3xl h-[40px] w-[90px] bg-blue-500 items-center text-base font-medium text-white text-center"
                                                 : rollCallList.find((rollCall) => rollCall.student_id === student.student_id).is_checked === "무단외박"
-                                                ? "shadow-md rounded-3xl h-[40px] w-[90px] bg-red-500 items-center text-base font-medium text-white text-center"
+                                                ? "shadow-md rounded-3xl h-[40px] w-[90px] bg-red-600 items-center text-base font-medium text-white text-center"
                                                 : "shadow-md rounded-3xl h-[40px] w-[90px] bg-green-600 items-center text-base font-medium text-white text-center"
                                             }
                                             disabled
