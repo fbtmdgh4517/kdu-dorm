@@ -16,7 +16,7 @@ const LoginPage = (props) => {
   const onSubmit = (data) => {
     axios
       .post(
-        "http://localhost:4000/auth/login",
+        "/auth/login",
         {
           student_id: data.student_id,
           student_password: data.student_password,
