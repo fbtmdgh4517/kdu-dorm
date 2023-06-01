@@ -15,7 +15,7 @@
     "rules": {
         "no-unused-vars": "warn",
         "no-console": "warn",
-        "func-style": ["warn", "expression"],
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "react/prop-types": 0
     }
 }

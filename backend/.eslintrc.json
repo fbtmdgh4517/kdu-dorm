@@ -12,7 +12,6 @@
     },
     "rules": {
         "no-unused-vars": "warn",
-        "no-console": "warn",
-        "func-style": ["warn", "expression"]
+        "no-console": "warn"
     }
 }
