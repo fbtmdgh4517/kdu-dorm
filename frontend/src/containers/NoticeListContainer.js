@@ -10,11 +10,6 @@ const NoticeListContainer = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:4000/notice");
-      console.log(res.data);
-      //res.data.root[0].list 배열과 res.data.root[0].topList 배열을 합치고 배열의 regdate를 기준으로 내림차순 정렬
-      // console.log(res.data.root[0].list.concat(res.data.root[0].topList).sort((a, b) => b.seq - a.seq));
-
-      // console.log(res.data.root[0].list.concat(res.data.root[0].topList));
       setNotice(res.data);
     } catch (e) {
       console.log(e);
