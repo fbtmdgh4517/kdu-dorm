@@ -58,7 +58,7 @@ app.use(
 
 app.use(
   cors({
-    origin: "http://3.39.123.237:4000/",
+    origin: "http://localhost:4000",
     credentials: true,
   })
 );
