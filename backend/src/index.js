@@ -1,7 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const passport = require("passport");
 const path = require("path");
 const MySQLStore = require("express-mysql-session")(session);
 const app = express();
@@ -67,8 +66,6 @@ app.use("/", express.static(path.join(__dirname, "../../frontend/build")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(COOKIE_SECRET));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/notice", noticeRouter);
 app.use("/weekDiet", weekDietRouter);
