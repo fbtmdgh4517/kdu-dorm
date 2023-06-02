@@ -15,7 +15,7 @@ const rollCallRouter = require("./routes/rollCall");
 const statisticsRouter = require("./routes/statistics");
 
 const envPath = path.join(__dirname, "../.env");
-require("dotenv").config({ path: envPath });
+require("dotenv").config();
 const { COOKIE_SECRET, PORT, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 const options = {
@@ -31,15 +31,6 @@ const options = {
 };
 
 const sessionStore = new MySQLStore(options);
-
-// sequelize
-//     .sync({ force: false })
-//     .then(() => {
-//         console.log('데이터베이스 연결 성공');
-//     })
-//     .catch((err) => {
-//         console.error(err);
-//     });
 
 app.use(
   session({
@@ -58,7 +49,7 @@ app.use(
 
 app.use(
   cors({
-    origin: "http://3.39.123.237:4000",
+    origin: "http://localhost:4000",
     // origin: ["http://3.39.123.237:4000", "http://localhost:4000", "http://3.39.123.237:8080", "http://localhost:3000"],
     credentials: true,
   })
