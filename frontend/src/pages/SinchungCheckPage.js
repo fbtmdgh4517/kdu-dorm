@@ -25,7 +25,7 @@ const SinchungCheckPage = () => {
   const fetchData = async () => {
     // console.log(id);
     await axios
-      .get(`http://localhost:4000/application/detail/${id}`, { withCredentials: true })
+      .get(`/application/detail/${id}`, { withCredentials: true })
       .then((res) => {
         console.log(res.data);
         setApplicationInfo(res.data[0]);
@@ -202,35 +202,35 @@ const SinchungCheckPage = () => {
                   ) : (
                     // 외박신청 정보
                     <>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">학번</h1>
                         <span>{applicationInfo.student_id}</span>
                       </div>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">학과</h1>
                         <span>{applicationInfo.student_department}</span>
                       </div>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">이름</h1>
                         <span>{applicationInfo.student_name}</span>
                       </div>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">호실</h1>
                         <span>{applicationInfo.student_room}</span>
                       </div>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">연락처</h1>
                         <span>{applicationInfo.student_contact}</span>
                       </div>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">외박 시작일</h1>
                         <span>{startDate}</span>
                       </div>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">외박 종료일</h1>
                         <span>{endDate}</span>
                       </div>
-                      <div className="container mx-auto mb-5">
+                      <div className="container mb-5">
                         <h1 className="font-semibold">외박 사유</h1>
                         <span>{applicationInfo.application_reason}</span>
                       </div>
