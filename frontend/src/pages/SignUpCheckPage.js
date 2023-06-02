@@ -17,7 +17,7 @@ const SignupCheckPage = () => {
 
   const fetchData = async () => {
     await axios
-      .get(`http://localhost:4000/auth/signupRequest/${id}`, { withCredentials: true })
+      .get(`/auth/signupRequest/${id}`, { withCredentials: true })
       .then((res) => {
         console.log(res.data[0]);
         setSignupRequestInfo(res.data[0]);
@@ -33,7 +33,7 @@ const SignupCheckPage = () => {
 
   const onAcceptSignupRequest = async () => {
     await axios
-      .put(`http://localhost:4000/auth/signupRequest/accept/${id}`, { withCredentials: true })
+      .put(`/auth/signupRequest/accept/${id}`, { withCredentials: true })
       .then((res) => {
         alert("회원가입 요청 승인이 완료되었습니다.");
         fetchData();
@@ -46,7 +46,7 @@ const SignupCheckPage = () => {
   const onRejectSignupRequest = async (data) => {
     await axios
       .put(
-        `http://localhost:4000/auth/signupRequest/reject/${id}`,
+        `/auth/signupRequest/reject/${id}`,
         {
           rejection_reason: data.rejection_reason,
         },

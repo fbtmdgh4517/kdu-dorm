@@ -16,7 +16,7 @@ const SignupPage = () => {
     console.log(data);
     axios
       .post(
-        "http://localhost:4000/auth/signupRequest",
+        "/auth/signupRequest",
         {
           student_name: data.student_name,
           student_id: data.student_id,

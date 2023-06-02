@@ -56,7 +56,7 @@ const SinchungCheckPage = () => {
 
   const onAcceptApplication = async () => {
     await axios
-      .put(`http://localhost:4000/application/accept/${id}`, { withCredentials: true })
+      .put(`/application/accept/${id}`, { withCredentials: true })
       .then((res) => {
         alert("외박 신청 승인이 완료되었습니다.");
         fetchData();
@@ -69,7 +69,7 @@ const SinchungCheckPage = () => {
   const onRefuseApplication = async (data) => {
     await axios
       .put(
-        `http://localhost:4000/application/refuse/${id}`,
+        `/application/refuse/${id}`,
         {
           rejection_reason: data.rejection_reason,
         },
@@ -89,7 +89,7 @@ const SinchungCheckPage = () => {
 
   const onSubmit = async (data) => {
     const { start_date, end_date, reason } = data;
-    const res = await axios.patch(`http://localhost:4000/application/update/${id}`, { start_date, end_date, reason }, { withCredentials: true });
+    const res = await axios.patch(`/application/update/${id}`, { start_date, end_date, reason }, { withCredentials: true });
     if (res.status === 200) {
       alert("외박 신청 수정이 완료되었습니다.");
       setIsUpdateBtnClicked(false);
@@ -99,7 +99,7 @@ const SinchungCheckPage = () => {
 
   const onDeleteApplication = async () => {
     if (confirm("정말 삭제하시겠습니까?") === true) {
-      const res = await axios.delete(`http://localhost:4000/application/delete/${id}`, { withCredentials: true });
+      const res = await axios.delete(`/application/delete/${id}`, { withCredentials: true });
       if (res.status === 200) {
         alert("외박 신청 삭제가 완료되었습니다.");
         window.location.href = "/main";

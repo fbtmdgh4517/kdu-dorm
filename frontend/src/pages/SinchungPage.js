@@ -16,7 +16,7 @@ const SinchungPage = () => {
   } = useForm();
 
   useEffect(() => {
-    axios.get("http://localhost:4000/auth/authcheck", { withCredentials: true }).then((res) => {
+    axios.get("/auth/authcheck", { withCredentials: true }).then((res) => {
       console.log(res.data);
       if (res.data.isLogin === "True") {
         setStudentId(res.data.studentId);
@@ -31,7 +31,7 @@ const SinchungPage = () => {
     endDate.setDate(endDate.getDate() + 1);
 
     axios
-      .post("http://localhost:4000/application/application", {
+      .post("/application/application", {
         student_id: studentId,
         start_date: data.start_date,
         end_date: endDate.toISOString().slice(0, 10),

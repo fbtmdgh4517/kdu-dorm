@@ -20,7 +20,7 @@ const RollCallRecordPage = () => {
 
   const fetchRollCallList = async (date) => {
     try {
-      const res = await axios.get(`http://localhost:4000/rollCall/rollCallList/${date}`, {
+      const res = await axios.get(`/rollCall/rollCallList/${date}`, {
         withCredentials: true,
       });
       console.log("점호 목록");

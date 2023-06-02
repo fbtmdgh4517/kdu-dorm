@@ -32,7 +32,7 @@ const RollCallPage = () => {
 
   const fetchRollCallList = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/rollCall/rollCallList/${year}-${month}-${date}`, {
+      const res = await axios.get(`/rollCall/rollCallList/${year}-${month}-${date}`, {
         withCredentials: true,
       });
       console.log("점호 목록");
@@ -45,7 +45,7 @@ const RollCallPage = () => {
 
   const fetchTodayOutStudentList = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/students/todayOutStudentList", { withCredentials: true });
+      const res = await axios.get("/students/todayOutStudentList", { withCredentials: true });
       console.log("외박 학생 목록");
       console.log(res.data);
       //res.data 배열에 있는 값들을 object로 변환
@@ -109,7 +109,7 @@ const RollCallPage = () => {
       console.log(Object.keys(data)[0]);
       console.log(Object.values(data));
       const res = await axios.post(
-        "http://localhost:4000/rollCall/checkComplete",
+        "/rollCall/checkComplete",
         {
           studentId: Object.keys(data),
           isChecked: Object.values(data),

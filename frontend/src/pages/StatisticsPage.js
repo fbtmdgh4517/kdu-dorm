@@ -33,7 +33,7 @@ const StatisticsPage = () => {
 
   const fetchTodayStatistics = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/statistics/todayStatistics", { withCredentials: true });
+      const res = await axios.get("/statistics/todayStatistics", { withCredentials: true });
       setTodayStatistics(res.data);
       setTodayApplicationStatistics(res.data.slice(1, 3));
       setTodayRollCallStatistics(res.data.slice(3, 6));
@@ -45,7 +45,7 @@ const StatisticsPage = () => {
 
   const fetchCompareStatistics = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/statistics/compareStatistics/${compareDay}`, { withCredentials: true });
+      const res = await axios.get(`/statistics/compareStatistics/${compareDay}`, { withCredentials: true });
       console.log(res.data);
       setRollCallCompareStatistics(res.data.rollCallCompareStatistics);
       setApplicationCompareStatistics(res.data.applicationCompareStatistics);
@@ -57,7 +57,7 @@ const StatisticsPage = () => {
 
   const fetchStatistics = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/statistics/statistics/${compareDay}`, { withCredentials: true });
+      const res = await axios.get(`/statistics/statistics/${compareDay}`, { withCredentials: true });
       console.log(res.data);
       console.log(Object.keys(res.data.rollCallStatistics));
       setRollCallStatistics(res.data.rollCallStatistics);

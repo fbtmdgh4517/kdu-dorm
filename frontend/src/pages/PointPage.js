@@ -41,7 +41,7 @@ const PointPage = () => {
   const onBonusPointSubmit = async (data) => {
     try {
       const res = await axios.put(
-        "http://localhost:4000/students/bonusPoint",
+        "/students/bonusPoint",
         {
           score_reason: data.score_reason,
           bonusPoint: data.bonusPoint,
@@ -61,7 +61,7 @@ const PointPage = () => {
   const onPenaltyPointSubmit = async (data) => {
     try {
       const res = await axios.put(
-        "http://localhost:4000/students/penaltyPoint",
+        "/students/penaltyPoint",
         {
           score_reason: data.score_reason,
           penalty_point: data.penaltyPoint,
