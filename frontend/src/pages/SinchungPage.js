@@ -17,7 +17,6 @@ const SinchungPage = () => {
 
   useEffect(() => {
     axios.get("/auth/authcheck", { withCredentials: true }).then((res) => {
-      console.log(res.data);
       if (res.data.isLogin === "True") {
         setStudentId(res.data.studentId);
         setIsLogin(true);
@@ -38,7 +37,6 @@ const SinchungPage = () => {
         reason: data.reason,
       })
       .then((res) => {
-        console.log(res);
         alert("신청이 완료되었습니다.");
         window.location.href = "/main";
       })

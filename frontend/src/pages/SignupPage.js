@@ -13,7 +13,6 @@ const SignupPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const onSubmit = (data) => {
-    console.log(data);
     axios
       .post(
         "/auth/signupRequest",
@@ -29,7 +28,6 @@ const SignupPage = () => {
         { withCredentials: true }
       )
       .then((res) => {
-        console.log(res.data.isSuccess);
         if (res.data.isSuccess === "True") {
           setSuccessMessage("회원가입 신청이 완료되었습니다. 관리자의 승인을 기다려주세요. 승인이나 거절이 완료되면 이메일로 알려드립니다.");
           alert("회원가입 신청이 완료되었습니다. 관리자의 승인을 기다려주세요. 승인이나 거절이 완료되면 이메일로 알려드립니다.");
@@ -46,7 +44,6 @@ const SignupPage = () => {
   };
 
   useEffect(() => {
-    console.log(phoneNumber);
     if (phoneNumber.length === 11) {
       setPhoneNumber(phoneNumber.replace(/ /g, "").replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3"));
     } else if (phoneNumber.length === 13) {

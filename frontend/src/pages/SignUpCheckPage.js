@@ -19,7 +19,6 @@ const SignupCheckPage = () => {
     await axios
       .get(`/auth/signupRequest/${id}`, { withCredentials: true })
       .then((res) => {
-        console.log(res.data[0]);
         setSignupRequestInfo(res.data[0]);
       })
       .catch((err) => {

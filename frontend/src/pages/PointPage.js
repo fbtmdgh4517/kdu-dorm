@@ -3,7 +3,7 @@ import HeaderContainer from "../containers/HeaderContainer";
 import SidebarContainer from "../containers/SidebarContainer";
 import axios from "axios";
 import Select from "react-select";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValueLoadable } from "recoil";
 import { studentIdState, studentInfoSelectorById, studentListSelector } from "../state";
 
@@ -84,8 +84,6 @@ const PointPage = () => {
   const togglePenaltyButton = () => {
     setIsPenaltyButtonClicked(!isPenaltyButtonClicked);
   };
-
-  console.log(studentOptions);
 
   return (
     <>

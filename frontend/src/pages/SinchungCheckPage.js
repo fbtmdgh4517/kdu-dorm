@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import HeaderContainer from "../containers/HeaderContainer";
 import SidebarContainer from "../containers/SidebarContainer";
 import { useEffect, useState } from "react";
@@ -27,7 +27,6 @@ const SinchungCheckPage = () => {
     await axios
       .get(`/application/detail/${id}`, { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
         setApplicationInfo(res.data[0]);
         const startDate = new Date(res.data[0].start_date);
         const endDate = new Date(res.data[0].end_date);
