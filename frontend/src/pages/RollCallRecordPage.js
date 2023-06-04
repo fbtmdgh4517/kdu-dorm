@@ -3,13 +3,14 @@ import HeaderContainer from "../containers/HeaderContainer";
 import SidebarContainer from "../containers/SidebarContainer";
 import axios from "axios";
 import { useRecoilValueLoadable } from "recoil";
-import { studentListSelector } from "../state";
+import { studentListSelector, userAuthInfoSelector } from "../state";
 
 const RollCallRecordPage = () => {
   const [todayDate, setTodayDate] = useState({});
   const [rollCallList, setRollCallList] = useState([]);
   const [roomList, setRoomList] = useState({});
   const studentList = useRecoilValueLoadable(studentListSelector);
+  const userAuthInfo = useRecoilValueLoadable(userAuthInfoSelector);
 
   const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
   const today = new Date();
@@ -23,8 +24,6 @@ const RollCallRecordPage = () => {
       const res = await axios.get(`/rollCall/rollCallList/${date}`, {
         withCredentials: true,
       });
-      console.log("점호 목록");
-      console.log(res.data);
       setRollCallList(res.data);
     } catch (error) {
       console.log(error);
@@ -32,7 +31,6 @@ const RollCallRecordPage = () => {
   };
 
   const onChangeInputDate = (e) => {
-    console.log(e.target.value);
     fetchRollCallList(e.target.value);
   };
 
@@ -51,10 +49,16 @@ const RollCallRecordPage = () => {
         }
         return acc;
       }, {});
-      console.log(roomStudent);
       setRoomList(roomStudent);
     }
   }, [studentList.state]);
+
+  useEffect(() => {
+    if (userAuthInfo.state === "hasValue" && userAuthInfo.contents.data.isLogin === "True" && userAuthInfo.contents.data.isAdmin === false) {
+      alert("관리자만 접근 가능합니다.");
+      window.location.href = "/main";
+    }
+  }, [userAuthInfo.state]);
 
   return (
     <>

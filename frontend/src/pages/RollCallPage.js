@@ -4,7 +4,7 @@ import SidebarContainer from "../containers/SidebarContainer";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRecoilValueLoadable } from "recoil";
-import { studentListSelector } from "../state";
+import { studentListSelector, userAuthInfoSelector } from "../state";
 
 const RollCallPage = () => {
   const [todayDate, setTodayDate] = useState({});
@@ -12,11 +12,11 @@ const RollCallPage = () => {
   const [rollCallList, setRollCallList] = useState([]);
   const [todayOutStudentList, setTodayOutStudentList] = useState([]);
   const [roomList, setRoomList] = useState({});
-  const [floor, setFloor] = useState(1);
   const [selectClassName, setSelectClassName] = useState(
     "shadow-md rounded-3xl h-[40px] w-[90px] bg-gray-500 items-center text-base font-medium text-white text-center"
   );
   const studentList = useRecoilValueLoadable(studentListSelector);
+  const userAuthInfo = useRecoilValueLoadable(userAuthInfoSelector);
   const {
     register,
     handleSubmit,
@@ -35,8 +35,6 @@ const RollCallPage = () => {
       const res = await axios.get(`/rollCall/rollCallList/${year}-${month}-${date}`, {
         withCredentials: true,
       });
-      console.log("점호 목록");
-      console.log(res.data);
       setRollCallList(res.data);
     } catch (error) {
       console.log(error);
@@ -46,8 +44,6 @@ const RollCallPage = () => {
   const fetchTodayOutStudentList = async () => {
     try {
       const res = await axios.get("/students/todayOutStudentList", { withCredentials: true });
-      console.log("외박 학생 목록");
-      console.log(res.data);
       //res.data 배열에 있는 값들을 object로 변환
       // const todayOutStudentList2 = res.data.reduce((acc, cur) => {
       //   acc[cur.student_id] = cur;
@@ -81,10 +77,16 @@ const RollCallPage = () => {
         }
         return acc;
       }, {});
-      console.log(roomStudent);
       setRoomList(roomStudent);
     }
   }, [studentList.state]);
+
+  useEffect(() => {
+    if (userAuthInfo.state === "hasValue" && userAuthInfo.contents.data.isLogin === "True" && userAuthInfo.contents.data.isAdmin === false) {
+      alert("관리자만 접근 가능합니다.");
+      window.location.href = "/main";
+    }
+  }, [userAuthInfo.state]);
 
   const onOptionChange = (e) => {
     setSelectedOption(e.target.value);
@@ -106,8 +108,6 @@ const RollCallPage = () => {
           return;
         }
       }
-      console.log(Object.keys(data)[0]);
-      console.log(Object.values(data));
       const res = await axios.post(
         "/rollCall/checkComplete",
         {

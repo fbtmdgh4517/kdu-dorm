@@ -13,6 +13,8 @@ import PointStatisticsChart from "../components/PointStatisticsChart";
 import WeeklyRollCallCompareChart from "../components/WeeklyRollCallCompareChart";
 import WeeklyApplicationCompareChart from "../components/WeeklyApplicationCompareChart";
 import ByPeriodPointCompareChart from "../components/ByPeriodPointCompareChart";
+import { useRecoilValueLoadable } from "recoil";
+import { userAuthInfoSelector } from "../state";
 
 const StatisticsPage = () => {
   const [todayStatistics, setTodayStatistics] = useState();
@@ -30,6 +32,7 @@ const StatisticsPage = () => {
 
   const [compareDay, setCompareDay] = useState(1);
   const [selectedOption, setSelectedOption] = useState("일간");
+  const userAuthInfo = useRecoilValueLoadable(userAuthInfoSelector);
 
   const fetchTodayStatistics = async () => {
     try {
@@ -77,6 +80,13 @@ const StatisticsPage = () => {
     fetchStatistics();
     fetchCompareStatistics();
   }, [compareDay]);
+
+  useEffect(() => {
+    if (userAuthInfo.state === "hasValue" && userAuthInfo.contents.data.isLogin === "True" && userAuthInfo.contents.data.isAdmin === false) {
+      alert("관리자만 접근 가능합니다.");
+      window.location.href = "/main";
+    }
+  }, [userAuthInfo.state]);
 
   const onOptionChange = (e) => {
     setSelectedOption(e.target.value);
