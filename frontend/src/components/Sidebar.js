@@ -12,11 +12,6 @@ const Sidebar = ({ onLogout, userAuthInfo }) => {
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <div className="flex-1 px-3 bg-white divide-y space-y-1">
               <ul className="space-y-2 pb-2">
-                <li>
-                  <button onClick={onLogout} className="text-base text-gray-900 font-normal rounded-lg flex w-full items-center p-2 hover:bg-gray-100 group">
-                    <span className="ml-3">로그아웃</span>
-                  </button>
-                </li>
                 {userAuthInfo.data.isAdmin && (
                   <>
                     <li>
@@ -41,6 +36,11 @@ const Sidebar = ({ onLogout, userAuthInfo }) => {
                     </li>
                   </>
                 )}
+                <li>
+                  <button onClick={onLogout} className="text-base text-red-500 font-normal rounded-lg flex w-full items-center p-2 hover:bg-gray-100 group">
+                    <span className="ml-3">로그아웃</span>
+                  </button>
+                </li>
               </ul>
             </div>
           </div>
