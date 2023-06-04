@@ -2,17 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import UserPage from "./UserPage";
-import { useRecoilState } from "recoil";
-import userAuthInfoState from "../state";
+import { useRecoilRefresher_UNSTABLE, useRecoilValueLoadable } from "recoil";
+import { userAuthInfoSelector } from "../state";
 
 const LoginPage = (props) => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const [user, setUser] = useState("");
-  const [isLogin, setIsLogin] = useState(false);
   const [errMessage, setErrMessage] = useState("");
-
+  const userAuthInfo = useRecoilValueLoadable(userAuthInfoSelector);
+  const refreshUserAuthInfo = useRecoilRefresher_UNSTABLE(userAuthInfoSelector);
   const onSubmit = (data) => {
     axios
       .post(
@@ -27,10 +25,8 @@ const LoginPage = (props) => {
         if (res.data.isLogin !== "True") {
           setErrMessage(res.data.isLogin);
         }
-        console.log(res.data);
         if (res.data.isLogin === "True") {
-          setUser(res.data.studentName);
-          setIsLogin(true);
+          refreshUserAuthInfo();
           navigate("/main");
         }
       })
@@ -38,6 +34,12 @@ const LoginPage = (props) => {
         console.error(err);
       });
   };
+
+  useEffect(() => {
+    if (userAuthInfo.state === "hasValue" && userAuthInfo.contents.data.isLogin === "True") {
+      navigate("/main");
+    }
+  }, [userAuthInfo.state]);
 
   return (
     <>
