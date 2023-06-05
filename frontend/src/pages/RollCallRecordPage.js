@@ -89,12 +89,14 @@ const RollCallRecordPage = () => {
                           <div className="bg-blue-200 shadow rounded-lg p-3 lg:p-4" key={room}>
                             <p className="text-lg font-semibold mb-3">{room}호</p>
                             <div className="grid grid-cols-2 gap-4">
-                              {roomList[room].map((student) => (
-                                <div key={student.student_id}>
-                                  <p htmlFor={student.student_id} className="font-semibold">
-                                    {student.student_name}
-                                  </p>
-                                  {
+                              {roomList[room].map((student) =>
+                                !rollCallList.find((rollCall) => rollCall.student_id === student.student_id) ? (
+                                  <></>
+                                ) : (
+                                  <div key={student.student_id}>
+                                    <p htmlFor={student.student_id} className="font-semibold">
+                                      {student.student_name}
+                                    </p>
                                     <input
                                       type="text"
                                       className={
@@ -107,9 +109,9 @@ const RollCallRecordPage = () => {
                                       disabled
                                       value={rollCallList.find((rollCall) => rollCall.student_id === student.student_id).is_checked}
                                     />
-                                  }
-                                </div>
-                              ))}
+                                  </div>
+                                )
+                              )}
                             </div>
                           </div>
                         ))
