@@ -23,11 +23,41 @@ const StudentListPage = () => {
     studentListSelectorRecoil.contents.data.filter((student) => {
       // console.log(e.target.value);
       if (student.student_name.includes(e.target.value)) {
-        console.log(student.student_name);
+        // console.log(student.student_name);
         searchResult.push(student);
       }
 
-      console.log(searchResult);
+      // console.log(searchResult);
+      setStudentList(searchResult);
+    });
+  };
+
+  const searchDepartment = (e) => {
+    const searchResult = [];
+
+    studentListSelectorRecoil.contents.data.filter((student) => {
+      // console.log(e.target.value);
+      if (student.student_department.includes(e.target.value)) {
+        // console.log(student.student_department);
+        searchResult.push(student);
+      }
+
+      // console.log(searchResult);
+      setStudentList(searchResult);
+    });
+  };
+
+  const searchRoom = (e) => {
+    const searchResult = [];
+
+    studentListSelectorRecoil.contents.data.filter((student) => {
+      // console.log(e.target.value);
+      if (student.student_room.toString().includes(e.target.value)) {
+        // console.log(student.student_room);
+        searchResult.push(student);
+      }
+
+      // console.log(searchResult);
       setStudentList(searchResult);
     });
   };
@@ -63,6 +93,13 @@ const StudentListPage = () => {
                     type="text"
                     className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
                     placeholder="검색할 학생의 학과"
+                    onChange={searchDepartment}
+                  />
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
+                    placeholder="검색할 학생의 호실"
+                    onChange={searchRoom}
                   />
                   <div className="p-3">
                     <div className="overflow-x-auto rounded-lg border border-blue-500 shadow-md">
