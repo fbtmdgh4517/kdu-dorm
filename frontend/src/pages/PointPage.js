@@ -27,7 +27,7 @@ const PointPage = () => {
     if (studentList.state === "hasValue") {
       setStudentOptions(
         studentList.contents.data.map((student) => {
-          return { value: student.student_id, label: `${student.student_name} ${student.student_id}` };
+          return { value: student.student_id, label: `${student.student_name} ${student.student_id} (${student.student_room}호)` };
         })
       );
     }
@@ -103,7 +103,7 @@ const PointPage = () => {
                       <div className="bg-gray-100 border border-gray-300 text-center p-3 rounded-lg shadow-md">
                         <div className="pb-4 border-b-2">
                           <span className="font-bold">
-                            {studentInfo.contents.student_name} {studentInfo.contents.student_id}
+                            {studentInfo.contents.student_name} {studentInfo.contents.student_id} ({studentInfo.contents.student_room}호)
                           </span>
                           <span> 의 현재 상벌점</span>
                         </div>
