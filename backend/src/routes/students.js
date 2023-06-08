@@ -4,7 +4,15 @@ const router = express.Router();
 
 router.get("/list", (req, res) => {
   const adminFloor = req.session.admin_floor;
-  db.query(`SELECT * FROM students WHERE student_room LIKE '${adminFloor}%' ORDER BY student_name`, (error, results) => {
+  db.query(`SELECT * FROM students WHERE student_room LIKE '${adminFloor}%' ORDER BY student_room`, (error, results) => {
+    if (error) throw error;
+    res.send(results);
+  });
+});
+
+router.get("/allStudentsList", (req, res) => {
+  const query = "SELECT * FROM students ORDER BY student_name";
+  db.query(query, (error, results) => {
     if (error) throw error;
     res.send(results);
   });
