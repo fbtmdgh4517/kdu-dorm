@@ -34,6 +34,11 @@ const Sidebar = ({ onLogout, userAuthInfo }) => {
                         <span className="ml-3">통계</span>
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/studentList" className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
+                        <span className="ml-3">학생 목록</span>
+                      </Link>
+                    </li>
                   </>
                 )}
                 <li>
