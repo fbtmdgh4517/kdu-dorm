@@ -15,6 +15,18 @@ const TodayApplicationCompareChart = ({ todayApplicationCompareStatistics }) => 
         text: "일간 외박신청 통계 그래프",
       },
     },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    scales: {
+      y: {
+        min: 0,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
   };
 
   // console.log(todayApplicationCompareStatistics);

@@ -15,6 +15,18 @@ const WeeklyRollCallCompareChart = ({ weeklyRollCallCompareStatistics, period, t
         text: titleText,
       },
     },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    scales: {
+      y: {
+        min: 0,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
   };
   // console.log(weeklyRollCallCompareStatistics);
 

@@ -15,6 +15,18 @@ const WeeklyApplicationCompareChart = ({ weeklyApplicationCompareStatistics, per
         text: titleText,
       },
     },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    scales: {
+      y: {
+        min: 0,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
   };
 
   // console.log(weeklyApplicationCompareStatistics);

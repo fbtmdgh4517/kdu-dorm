@@ -15,6 +15,18 @@ const TodayRollCallCompareChart = ({ todayRollCallCompareStatistics }) => {
         text: "일간 점호 통계 그래프",
       },
     },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    scales: {
+      y: {
+        min: 0,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
   };
   console.log(todayRollCallCompareStatistics);
 
@@ -94,7 +106,11 @@ const TodayRollCallCompareChart = ({ todayRollCallCompareStatistics }) => {
     ],
   };
 
-  return <Line data={data} options={options} />;
+  return (
+    <Line data={data} options={options} />
+    // <div className="overflow-y-auto">
+    // </div>
+  );
 };
 
 export default TodayRollCallCompareChart;
