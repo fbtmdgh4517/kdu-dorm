@@ -29,7 +29,7 @@ const Header = ({ userName, onSideBarToggle }) => {
                 ></path>
               </svg>
             </button>
-            <Link className="text-xl font-bold flex items-center lg:ml-2.5" to="/main">
+            <Link className="text-xl font-bold flex items-center lg:ml-2.5 truncate" to="/main">
               <img src={logo} alt="logo" className="max-w-[200px] md:max-w-[250px]" />
               <span className="font-bold text-gray-900 text-base md:text-xl">외박신청</span>
             </Link>

@@ -6,13 +6,13 @@ const UserPointRecords = ({ studentPointRecords, pageChangeHandler, page, offset
       {studentPointRecords.slice(offset, offset + 5).map((record) => {
         return (
           <div key={record.record_id} className="flex m-3 justify-between">
-            <div>
+            <div className="truncate">
               <span className={record.score_type === "상점" ? "font-bold mr-1 text-blue-700" : "font-bold mr-1 text-red-500"}>[{record.score_type}]</span>
               <span className="font-bold mr-3">{record.given_score}점</span>
-              <span>{record.score_reason}</span>
+              <span className="text-e">{record.score_reason}</span>
             </div>
             <div>
-              <span className="font-medium">{record.score_date.split("T")[0]}</span>
+              <span className="font-medium truncate">{record.score_date.split("T")[0]}</span>
             </div>
           </div>
         );
