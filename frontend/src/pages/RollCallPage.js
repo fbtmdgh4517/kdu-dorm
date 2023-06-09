@@ -203,11 +203,7 @@ const RollCallPage = () => {
                                           <option value="무단외박">무단외박</option>
                                         </select>
                                       ) : // 점호를 안했고 해당 학생이 오늘 외박신청한 학생 목록에 있고 오늘 날짜가 외박 시작날짜, 외박 종료날짜 사이이면 아래를 보여줌
-                                      rollCallList.length === 0 &&
-                                        todayOutStudentList[student.student_id] &&
-                                        new Date(todayOutStudentList[student.student_id].start_date) <
-                                          today <
-                                          new Date(todayOutStudentList[student.student_id].end_date) ? (
+                                      rollCallList.length === 0 && todayOutStudentList[student.student_id] ? (
                                         <select
                                           {...register(`${student.student_id.toString()}`, {
                                             required: {
@@ -224,10 +220,7 @@ const RollCallPage = () => {
                                       ) : (
                                         // 점호를 했고 해당 학생이 오늘 외박신청한 학생 목록에 있고 오늘 날짜가 외박 시작날짜, 외박 종료날짜 사이면 아래를 보여줌
                                         rollCallList.length > 0 &&
-                                        todayOutStudentList[student.student_id] &&
-                                        new Date(todayOutStudentList[student.student_id].start_date) <
-                                          today <
-                                          new Date(todayOutStudentList[student.student_id].end_date) && (
+                                        todayOutStudentList[student.student_id](
                                           <select
                                             {...register(`${student.student_id.toString()}`, {
                                               required: {
@@ -262,7 +255,7 @@ const RollCallPage = () => {
                           ))}
                         </div>
                         {rollCallList.length === 0 && (
-                          <button className="shadow-md rounded-3xl h-[40px] w-[100px] bg-gray-500 items-center justify-center self-center text-base font-medium text-white mx-auto flex">
+                          <button className="shadow-md rounded-3xl h-[40px] w-[100px] bg-gray-500 items-center justify-center self-center text-base font-medium text-white mx-auto flex mt-4">
                             제출
                           </button>
                         )}
