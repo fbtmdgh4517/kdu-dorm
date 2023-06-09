@@ -1,17 +1,37 @@
 import Pagination from "react-js-pagination";
 import { Link } from "react-router-dom";
 
-const UserApplicationList = ({ applicationInfo, page, pageChangeHandler, offset }) => {
+const UserApplicationList = ({ applicationInfo, page, pageChangeHandler, offset, todayOutStudentList, userAuthInfo }) => {
   return (
     <>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 목록</h1>
-        <Link
-          to="/sinchung"
-          className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
-        >
-          외박신청
-        </Link>
+        {/* {todayOutStudentList.filter(
+          (student) =>
+            student.student_id === userAuthInfo.data.studentId && (
+              <Link
+                to="/sinchung"
+                className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+              >
+                외박신청
+              </Link>
+            )
+        )} */}
+        {todayOutStudentList[userAuthInfo.studentId] ? (
+          <input
+            type="text"
+            className="shadow-md text-center h-[35px] w-[85px] bg-green-600 text-base font-medium text-white rounded-3xl inline-flex items-center p-2"
+            value="외박 중"
+            readOnly
+          ></input>
+        ) : (
+          <Link
+            to="/sinchung"
+            className="shadow-md h-[35px] w-[85px] bg-blue-500 justify-center self-center text-base font-medium text-white rounded-3xl inline-flex items-center p-2 hover:bg-blue-700 transition ease-in-out hover:scale-110"
+          >
+            외박신청
+          </Link>
+        )}
       </div>
       <div className="px-3">
         <div className="overflow-x-auto rounded-lg border border-blue-500 shadow-md">
