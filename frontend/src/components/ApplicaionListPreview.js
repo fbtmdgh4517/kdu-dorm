@@ -1,11 +1,15 @@
 import Pagination from "react-js-pagination";
 import { Link } from "react-router-dom";
 
-const ApplicationListPreview = ({ applicationInfo, page, pageChangeHandler, offset }) => {
+const ApplicationListPreview = ({ applicationInfo, page, pageChangeHandler, offset, noCheckedCount }) => {
   return (
     <>
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold leading-none text-gray-900">외박 신청 목록</h1>
+        <div className="flex items-center">
+          <span className="text-base font-semibold text-gray-500">미확인 외박 신청 : </span>
+          <span className="ml-2 text-base text-red-600 font-bold">{noCheckedCount}개</span>
+        </div>
       </div>
       <div className="p-3">
         <div className="overflow-x-auto rounded-lg border border-blue-500 shadow-md">
