@@ -131,7 +131,7 @@ const StatisticsPage = () => {
                     applicationCompareStatistics &&
                     selectedOption === "일간" && (
                       <>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
@@ -145,7 +145,7 @@ const StatisticsPage = () => {
                               <TodayRollCallStatisticsChart todayRollCallStatistics={todayRollCallStatistics} />
                             )}
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
@@ -153,7 +153,7 @@ const StatisticsPage = () => {
                             <TodayRollCallCompareChart todayRollCallCompareStatistics={rollcallCompareStatistics} />
                           </div>
                         </div>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
@@ -167,7 +167,7 @@ const StatisticsPage = () => {
                               <TodayApplicationStatisticsChart todayApplicationStatistics={todayApplicationStatistics} />
                             )}
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
@@ -187,7 +187,7 @@ const StatisticsPage = () => {
                               <TodayPointStatisticsChart todayPointStatistics={todayPointStatistics} />
                             )}
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계 그래프</h1>
@@ -208,7 +208,7 @@ const StatisticsPage = () => {
                     applicationCompareStatistics &&
                     selectedOption === "주간" && (
                       <>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
@@ -222,7 +222,7 @@ const StatisticsPage = () => {
                               <RollCallStatisticsChart rollCallStatistics={rollCallStatistics} />
                             )}
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
@@ -234,7 +234,7 @@ const StatisticsPage = () => {
                             />
                           </div>
                         </div>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
@@ -242,7 +242,7 @@ const StatisticsPage = () => {
                             </div>
                             <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
@@ -260,7 +260,7 @@ const StatisticsPage = () => {
                             </div>
                             <PointStatisticsChart pointStatistics={pointStatistics} />
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계 그래프</h1>
@@ -281,7 +281,7 @@ const StatisticsPage = () => {
                     applicationCompareStatistics &&
                     selectedOption === "월간" && (
                       <>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
@@ -295,7 +295,7 @@ const StatisticsPage = () => {
                               <RollCallStatisticsChart rollCallStatistics={rollCallStatistics} />
                             )}
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">점호 통계 그래프</h1>
@@ -307,7 +307,7 @@ const StatisticsPage = () => {
                             />
                           </div>
                         </div>
-                        <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                           <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
@@ -318,7 +318,7 @@ const StatisticsPage = () => {
                             </div>
                             <ApplicationStatisticsChart applicationStatistics={applicationStatistics} />
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">외박신청 통계 그래프</h1>
@@ -336,7 +336,7 @@ const StatisticsPage = () => {
                             </div>
                             <PointStatisticsChart pointStatistics={pointStatistics} />
                           </div>
-                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2">
+                          <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 xl:p-6 col-span-2 hidden md:inline-block">
                             {/* 카드 */}
                             <div className="flex items-center justify-between mb-4">
                               <h1 className="text-xl font-bold leading-none text-gray-900">상벌점 통계 그래프</h1>
