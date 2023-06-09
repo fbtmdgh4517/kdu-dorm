@@ -106,7 +106,7 @@ const RollCallRecordPage = () => {
                                           ? "shadow-md rounded-3xl h-[40px] w-[90px] bg-red-600 items-center text-base font-medium text-white text-center"
                                           : "shadow-md rounded-3xl h-[40px] w-[90px] bg-green-600 items-center text-base font-medium text-white text-center"
                                       }
-                                      disabled
+                                      readOnly
                                       value={rollCallList.find((rollCall) => rollCall.student_id === student.student_id).is_checked}
                                     />
                                   </div>
