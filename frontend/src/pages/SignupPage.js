@@ -117,7 +117,7 @@ const SignupPage = () => {
             <label htmlFor="student_department" className="font-medium">
               학과
             </label>
-            <input
+            {/* <input
               {...register("student_department", {
                 required: {
                   value: true,
@@ -131,7 +131,44 @@ const SignupPage = () => {
                   : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
               }
               placeholder="ex) OOO학과"
-            />
+            /> */}
+            <select
+              {...register("student_department", {
+                required: {
+                  value: true,
+                  message: "학과를 입력하세요",
+                },
+              })}
+              id="student_department"
+              className={
+                errors.student_department
+                  ? "border border-red-500 container mx-auto rounded-xl shadow-md h-10 px-2"
+                  : "border border-black container mx-auto rounded-xl shadow-md h-10 px-2"
+              }
+              placeholder="ex) OOO학과"
+            >
+              <option value="">학과를 선택하세요</option>
+              <option value="건축공학과">건축공학과</option>
+              <option value="건축디자인학과">건축디자인학과</option>
+              <option value="경영학과">경영학과</option>
+              <option value="경찰학과">경찰학과</option>
+              <option value="공공복지정보관리학과">공공복지정보관리학과</option>
+              <option value="국제융합학부">국제융합학부</option>
+              <option value="군사학과">군사학과</option>
+              <option value="디자인학과">디자인학과</option>
+              <option value="사회복지학과">사회복지학과</option>
+              <option value="소프트웨어학과">소프트웨어학과</option>
+              <option value="스포츠마케팅학과">스포츠마케팅학과</option>
+              <option value="외식사업학과">외식사업학과</option>
+              <option value="유아교육과">유아교육과</option>
+              <option value="체육학과">체육학과</option>
+              <option value="컴퓨터공학과">컴퓨터공학과</option>
+              <option value="토목공학과">토목공학과</option>
+              <option value="항공서비스학과">항공서비스학과</option>
+              <option value="행정학과">행정학과</option>
+              <option value="호텔관광경영학과">호텔관광경영학과</option>
+              <option value="호텔조리학과">호텔조리학과</option>
+            </select>
             {errors.student_department && <span className="text-red-500">{errors.student_department.message}</span>}
           </div>
           <div className="container mx-auto mb-5">
