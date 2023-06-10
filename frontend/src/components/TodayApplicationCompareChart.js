@@ -71,8 +71,8 @@ const TodayApplicationCompareChart = ({ todayApplicationCompareStatistics }) => 
             return 0;
           }
         }),
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
       {
         label: "외박신청 거부 수",
@@ -89,8 +89,8 @@ const TodayApplicationCompareChart = ({ todayApplicationCompareStatistics }) => 
             return 0;
           }
         }),
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
     ],
   };
