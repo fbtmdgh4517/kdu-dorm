@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AdminPage from "./AdminPage";
 import UserPage from "./UserPage";
 import { useRecoilRefresher_UNSTABLE } from "recoil";
@@ -19,18 +19,12 @@ const MainPage = () => {
     // console.log(userAuthInfo);
   }, []);
 
-  switch (userAuthInfo.state) {
-    case "loading":
-      return <div>loading...</div>;
-    case "hasError":
-      return <div>error...</div>;
-    default:
-      if (userAuthInfo.contents.data.isLogin === "True" && userAuthInfo.contents.data.isAdmin) {
-        return <AdminPage></AdminPage>;
-      } else if (userAuthInfo.contents.data.isLogin === "True" && !userAuthInfo.contents.data.isAdmin) {
-        return <UserPage></UserPage>;
-      }
-  }
+  return (
+    <>
+      {userAuthInfo.state === "hasValue" && userAuthInfo.contents.data.isLogin === "True" && userAuthInfo.contents.data.isAdmin && <AdminPage></AdminPage>}
+      {userAuthInfo.state === "hasValue" && userAuthInfo.contents.data.isLogin === "True" && !userAuthInfo.contents.data.isAdmin && <UserPage></UserPage>}
+    </>
+  );
 };
 
 export default MainPage;
