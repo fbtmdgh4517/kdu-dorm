@@ -19,7 +19,8 @@ router.get("/allStudentsList", (req, res) => {
 });
 
 router.get("/penaltyDangerStudentsList", (req, res) => {
-  const query = "SELECT * FROM students WHERE penalty_point >= 7 ORDER BY penalty_point DESC";
+  const adminFloor = req.session.admin_floor;
+  const query = `SELECT * FROM students WHERE penalty_point >= 7 AND student_room LIKE '${adminFloor}%' ORDER BY penalty_point DESC`;
   db.query(query, (error, results) => {
     if (error) throw error;
     res.send(results);
