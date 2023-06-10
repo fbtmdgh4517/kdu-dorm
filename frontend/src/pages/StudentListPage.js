@@ -9,7 +9,11 @@ import Pagination from "react-js-pagination";
 const StudentListPage = () => {
   const userAuthInfo = useRecoilValueLoadable(userAuthInfoSelector);
   const studentListSelectorRecoil = useRecoilValueLoadable(studentListSelector);
-  const [studentList, setStudentList] = useState([]);
+  const [searchedStudentList, setSearchedStudentList] = useState([]);
+  const [studentNameInput, setStudentNameInput] = useState("");
+  const [studentDepartmentInput, setStudentDepartmentInput] = useState("");
+  const [studentRoomInput, setStudentRoomInput] = useState("");
+  const [isSearched, setIsSearched] = useState();
   const [page, setPage] = useState(1);
   const offset = (page - 1) * 5;
 
@@ -20,46 +24,149 @@ const StudentListPage = () => {
   const searchStudent = (e) => {
     const searchResult = [];
 
-    studentListSelectorRecoil.contents.data.filter((student) => {
-      // console.log(e.target.value);
-      if (student.student_name.includes(e.target.value)) {
-        // console.log(student.student_name);
-        searchResult.push(student);
-      }
-
-      // console.log(searchResult);
-      setStudentList(searchResult);
-    });
-  };
-
-  const searchDepartment = (e) => {
-    const searchResult = [];
-
-    studentListSelectorRecoil.contents.data.filter((student) => {
-      // console.log(e.target.value);
-      if (student.student_department.includes(e.target.value)) {
-        // console.log(student.student_department);
-        searchResult.push(student);
-      }
-
-      // console.log(searchResult);
-      setStudentList(searchResult);
-    });
-  };
-
-  const searchRoom = (e) => {
-    const searchResult = [];
-
-    studentListSelectorRecoil.contents.data.filter((student) => {
-      // console.log(e.target.value);
-      if (student.student_room.toString().includes(e.target.value)) {
-        // console.log(student.student_room);
-        searchResult.push(student);
-      }
-
-      // console.log(searchResult);
-      setStudentList(searchResult);
-    });
+    if (searchedStudentList.length === 0) {
+      console.log(0);
+      studentListSelectorRecoil.contents.data.filter((student) => {
+        if (
+          studentDepartmentInput.length === 0 &&
+          studentRoomInput.length === 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length === 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length === 0 &&
+          student.student_room.toString().includes(studentRoomInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length === 0 &&
+          studentNameInput.length === 0 &&
+          student.student_department.includes(studentDepartmentInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length === 0 &&
+          student.student_department.includes(studentDepartmentInput) &&
+          student.student_room.toString().includes(studentRoomInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length === 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_department.includes(studentDepartmentInput) &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length === 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_room.toString().includes(studentRoomInput) &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_department.includes(studentDepartmentInput) &&
+          student.student_room.toString().includes(studentRoomInput) &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        }
+        console.log(searchResult);
+        if (searchResult.length === 0) {
+          setIsSearched(false);
+        }
+        setSearchedStudentList(searchResult);
+      });
+    } else if (searchedStudentList.length !== 0) {
+      console.log(1);
+      searchedStudentList.filter((student) => {
+        if (
+          studentDepartmentInput.length === 0 &&
+          studentRoomInput.length === 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length === 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length === 0 &&
+          student.student_room.toString().includes(studentRoomInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length === 0 &&
+          studentNameInput.length === 0 &&
+          student.student_department.includes(studentDepartmentInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length === 0 &&
+          student.student_department.includes(studentDepartmentInput) &&
+          student.student_room.toString().includes(studentRoomInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length === 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_department.includes(studentDepartmentInput) &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length === 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_room.toString().includes(studentRoomInput) &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        } else if (
+          studentDepartmentInput.length !== 0 &&
+          studentRoomInput.length !== 0 &&
+          studentNameInput.length !== 0 &&
+          student.student_department.includes(studentDepartmentInput) &&
+          student.student_room.toString().includes(studentRoomInput) &&
+          student.student_name.includes(studentNameInput)
+        ) {
+          setIsSearched(true);
+          searchResult.push(student);
+        }
+        console.log(searchResult);
+        if (searchResult.length === 0) {
+          setIsSearched(false);
+        }
+        setSearchedStudentList(searchResult);
+      });
+    }
   };
 
   useEffect(() => {
@@ -85,22 +192,33 @@ const StudentListPage = () => {
                   </div>
                   <input
                     type="text"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500 mb-4"
                     placeholder="검색할 학생의 이름"
-                    onChange={searchStudent}
+                    // onChange={searchStudent}
+                    onChange={(e) => setStudentNameInput(e.target.value)}
                   />
                   <input
                     type="text"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500 mb-4"
                     placeholder="검색할 학생의 학과"
-                    onChange={searchDepartment}
+                    // onChange={searchDepartment}
+                    onChange={(e) => setStudentDepartmentInput(e.target.value)}
                   />
                   <input
                     type="text"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500 mb-4"
                     placeholder="검색할 학생의 호실"
-                    onChange={searchRoom}
+                    // onChange={searchRoom}
+                    onChange={(e) => setStudentRoomInput(e.target.value)}
                   />
+                  <div className="justify-center flex">
+                    <button className="w-24 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg justify-center" onClick={searchStudent}>
+                      검색
+                    </button>
+                  </div>
+                  {isSearched === false && (
+                    <span className="flex justify-center items-center w-full text-red-600 font-semibold mt-3">검색 결과가 없습니다.</span>
+                  )}
                   <div className="p-3">
                     <div className="overflow-x-auto rounded-lg border border-blue-500 shadow-md">
                       <table className="table-auto w-full">
@@ -133,9 +251,9 @@ const StudentListPage = () => {
                           </tr>
                         </thead>
                         <tbody className="divide-y div divide-gray-200 text-center">
-                          {/* 검색 input이 비었을때 */}
+                          {/* 검색 안한 상태 */}
                           {studentListSelectorRecoil.state === "hasValue" &&
-                            studentList.length === 0 &&
+                            searchedStudentList.length === 0 &&
                             studentListSelectorRecoil.contents.data.slice(offset, offset + 10).map((student) => {
                               return (
                                 <tr className="hover:bg-blue-100" key={student.student_id}>
@@ -150,9 +268,9 @@ const StudentListPage = () => {
                                 </tr>
                               );
                             })}
-                          {/* 검색 input에 값을 입력했을때 */}
-                          {studentList.length !== 0 &&
-                            studentList.slice(offset, offset + 10).map((student) => {
+                          {/* 검색 한 상태 */}
+                          {searchedStudentList.length !== 0 &&
+                            searchedStudentList.slice(offset, offset + 10).map((student) => {
                               return (
                                 <tr className="hover:bg-blue-100" key={student.student_id}>
                                   <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_id}</td>
@@ -170,8 +288,8 @@ const StudentListPage = () => {
                       </table>
                     </div>
                   </div>
-                  {/* 검색 input이 비었을때 */}
-                  {studentListSelectorRecoil.state === "hasValue" && studentList.length === 0 && (
+                  {/* 검색 안한 상태 */}
+                  {studentListSelectorRecoil.state === "hasValue" && searchedStudentList.length === 0 && (
                     <div className="mx-auto items-center flex justify-center mt-6">
                       <Pagination
                         innerClass="inline-flex items-center -space-x-px bg-white"
@@ -189,8 +307,8 @@ const StudentListPage = () => {
                       />
                     </div>
                   )}
-                  {/* 검색 input에 값을 입력했을때 */}
-                  {studentList.length !== 0 && (
+                  {/* 검색 한 상태 */}
+                  {searchedStudentList.length !== 0 && (
                     <div className="mx-auto items-center flex justify-center mt-6">
                       <Pagination
                         innerClass="inline-flex items-center -space-x-px bg-white"
@@ -200,7 +318,7 @@ const StudentListPage = () => {
                         activeClass="z-10 px-3 py-2 leading-tight bg-blue-500 text-white border border-blue-300"
                         activePage={page}
                         itemsCountPerPage={5}
-                        totalItemsCount={studentList.length}
+                        totalItemsCount={searchedStudentList.length}
                         pageRangeDisplayed={5}
                         prevPageText={"<"}
                         nextPageText={">"}
