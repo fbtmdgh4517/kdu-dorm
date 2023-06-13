@@ -10,6 +10,7 @@ const StudentListPage = () => {
   const userAuthInfo = useRecoilValueLoadable(userAuthInfoSelector);
   const studentListSelectorRecoil = useRecoilValueLoadable(studentListSelector);
   const [searchedStudentList, setSearchedStudentList] = useState([]);
+  const [studentList, setStudentList] = useState([]);
   const [studentNameInput, setStudentNameInput] = useState("");
   const [studentDepartmentInput, setStudentDepartmentInput] = useState("");
   const [studentRoomInput, setStudentRoomInput] = useState("");
@@ -21,9 +22,16 @@ const StudentListPage = () => {
     setPage(page);
   };
 
+  const resetResult = () => {
+    setSearchedStudentList(studentList);
+  };
+
   const searchStudent = (e) => {
     const searchResult = [];
-
+    // if (studentListSelectorRecoil.state === "hasValue") {
+    //   setSearchedStudentList(studentListSelectorRecoil.contents.data);
+    // }
+    console.log(studentList);
     if (searchedStudentList.length === 0) {
       console.log(0);
       studentListSelectorRecoil.contents.data.filter((student) => {
@@ -176,6 +184,13 @@ const StudentListPage = () => {
     }
   }, [userAuthInfo.state]);
 
+  useEffect(() => {
+    if (studentListSelectorRecoil.state === "hasValue") {
+      setStudentList(studentListSelectorRecoil.contents.data);
+      setSearchedStudentList(studentListSelectorRecoil.contents.data);
+    }
+  }, [studentListSelectorRecoil.state]);
+
   return (
     <>
       <HeaderContainer></HeaderContainer>
@@ -211,9 +226,12 @@ const StudentListPage = () => {
                     // onChange={searchRoom}
                     onChange={(e) => setStudentRoomInput(e.target.value)}
                   />
-                  <div className="justify-center flex">
+                  <div className="flex justify-between  md:mx-96 my-5">
                     <button className="w-24 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg justify-center" onClick={searchStudent}>
                       검색
+                    </button>
+                    <button className="w-24 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg justify-center" onClick={resetResult}>
+                      초기화
                     </button>
                   </div>
                   {isSearched === false && (
@@ -252,7 +270,7 @@ const StudentListPage = () => {
                         </thead>
                         <tbody className="divide-y div divide-gray-200 text-center">
                           {/* 검색 안한 상태 */}
-                          {studentListSelectorRecoil.state === "hasValue" &&
+                          {/* {studentListSelectorRecoil.state === "hasValue" &&
                             searchedStudentList.length === 0 &&
                             studentListSelectorRecoil.contents.data.slice(offset, offset + 10).map((student) => {
                               return (
@@ -267,9 +285,9 @@ const StudentListPage = () => {
                                   <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_email}</td>
                                 </tr>
                               );
-                            })}
+                            })} */}
                           {/* 검색 한 상태 */}
-                          {searchedStudentList.length !== 0 &&
+                          {/* {searchedStudentList.length !== 0 &&
                             searchedStudentList.slice(offset, offset + 10).map((student) => {
                               return (
                                 <tr className="hover:bg-blue-100" key={student.student_id}>
@@ -283,13 +301,43 @@ const StudentListPage = () => {
                                   <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_email}</td>
                                 </tr>
                               );
-                            })}
+                            })} */}
+                          {searchedStudentList.slice(offset, offset + 10).map((student) => {
+                            return (
+                              <tr className="hover:bg-blue-100" key={student.student_id}>
+                                <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_id}</td>
+                                <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_name}</td>
+                                <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_department}</td>
+                                <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_room}호</td>
+                                <td className="p-2 whitespace-nowrap font-medium text-blue-600">{student.bonus_point}점</td>
+                                <td className="p-2 whitespace-nowrap font-medium text-red-600">{student.penalty_point}점</td>
+                                <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_contact}</td>
+                                <td className="p-2 whitespace-nowrap font-medium text-gray-800">{student.student_email}</td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
                   </div>
+                  <div className="mx-auto items-center flex justify-center mt-6">
+                    <Pagination
+                      innerClass="inline-flex items-center -space-x-px bg-white"
+                      itemClassFirst="block px-3 py-2 ml-0 leading-tight border border-gray-300 rounded-l-lg"
+                      itemClassLast="block px-3 py-2 leading-tight border border-gray-300 rounded-r-lg"
+                      itemClass="block px-3 py-2 leading-tight border border-gray-300 cursor-pointer hover:bg-blue-500 hover:text-white"
+                      activeClass="z-10 px-3 py-2 leading-tight bg-blue-500 text-white border border-blue-300"
+                      activePage={page}
+                      itemsCountPerPage={5}
+                      totalItemsCount={searchedStudentList.length}
+                      pageRangeDisplayed={5}
+                      prevPageText={"<"}
+                      nextPageText={">"}
+                      onChange={pageChangeHandler}
+                    />
+                  </div>
                   {/* 검색 안한 상태 */}
-                  {studentListSelectorRecoil.state === "hasValue" && searchedStudentList.length === 0 && (
+                  {/* {studentListSelectorRecoil.state === "hasValue" && searchedStudentList.length === 0 && (
                     <div className="mx-auto items-center flex justify-center mt-6">
                       <Pagination
                         innerClass="inline-flex items-center -space-x-px bg-white"
@@ -306,9 +354,9 @@ const StudentListPage = () => {
                         onChange={pageChangeHandler}
                       />
                     </div>
-                  )}
+                  )} */}
                   {/* 검색 한 상태 */}
-                  {searchedStudentList.length !== 0 && (
+                  {/* {searchedStudentList.length !== 0 && (
                     <div className="mx-auto items-center flex justify-center mt-6">
                       <Pagination
                         innerClass="inline-flex items-center -space-x-px bg-white"
@@ -325,7 +373,7 @@ const StudentListPage = () => {
                         onChange={pageChangeHandler}
                       />
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
